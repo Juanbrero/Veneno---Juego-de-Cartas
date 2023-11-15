@@ -55,6 +55,10 @@ public class VentanaGrafica implements IVista {
         this.controlador = controlador;
     }
 
+    public Controlador getControlador() {
+        return this.controlador;
+    }
+
     /**
      * Setea la pantalla principal como visible.
      */
@@ -95,7 +99,7 @@ public class VentanaGrafica implements IVista {
         pantallaMenu.setVisible(false);
         System.out.println("vista > arrancamossss");
 
-        pantallaJuego = new VentanaJuego(nombre);
+        pantallaJuego = new VentanaJuego(nombre, this);
 
     }
 
@@ -124,6 +128,22 @@ public class VentanaGrafica implements IVista {
         mostrarMensaje("Tu turno!");
     }
 
+    public void tirarCarta(int cartaJugada) {
+        pantallaJuego.tirarCarta(cartaJugada);
+
+    }
+
+    public void agregarCartaEnMesa(String palo, double valor) {
+        pantallaJuego.agregarCartaEnMesa(palo, valor);
+    }
+
+    public void reiniciarPila(String pilaAReiniciar) {
+        pantallaJuego.reiniciarPila(pilaAReiniciar);
+    }
+
+    public void levantarCartas(int puntos) {
+        pantallaJuego.levantarCartas(puntos);
+    }
 
     public void mostrarMensaje(String mensaje) {
 
@@ -139,7 +159,7 @@ public class VentanaGrafica implements IVista {
      * Crea un nuevo Cartel de dialogo.
      * @param panel
      */
-    private void nuevoDialogo(JPanel panel) {
+    public void nuevoDialogo(JPanel panel) {
 
         JDialog panelDialogo = new JDialog();
         panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

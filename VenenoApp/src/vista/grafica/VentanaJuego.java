@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 public class VentanaJuego {
 
+    private VentanaGrafica pantallaMenu;
     private JFrame pantallaJuego;
     private String nombre;
     private JPanel panelPrincipal;
@@ -44,8 +45,8 @@ public class VentanaJuego {
     private JLabel jugador4;
 
 
-    public VentanaJuego(String nombreJugador) {
-
+    public VentanaJuego(String nombreJugador, VentanaGrafica pantallaMenu) {
+        this.pantallaMenu = pantallaMenu;
         this.nombre = nombreJugador;
 
         pantallaJuego = new JFrame("Veneno - Juego de cartas");
@@ -86,7 +87,7 @@ public class VentanaJuego {
             oro.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    controlador.tirarCarta(indice,"ORO");
+                    pantallaMenu.getControlador().tirarCarta(indice,"ORO");
                 }
             });
 
@@ -95,7 +96,7 @@ public class VentanaJuego {
             basto.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    controlador.tirarCarta(indice, "BASTO");
+                    pantallaMenu.getControlador().tirarCarta(indice, "BASTO");
                 }
             });
 
@@ -104,18 +105,84 @@ public class VentanaJuego {
             espada.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    controlador.tirarCarta(indice,"ESPADA");
+                    pantallaMenu.getControlador().tirarCarta(indice,"ESPADA");
                 }
             });
 
 
-            nuevoDialogo(veneno);
+            pantallaMenu.nuevoDialogo(veneno);
 
         }
         else {
-            controlador.tirarCarta(indice, palo);
+            pantallaMenu.getControlador().tirarCarta(indice, palo);
         }
     }
+
+    /**
+     * Baja logica de la carta tirada.
+     * @param cartaJugada
+     */
+    public void tirarCarta(int cartaJugada) {
+        cartas[cartaJugada].setVisible(false);
+
+    }
+
+    /**
+     * Agrega la carta tirada a la pila correspondiente de la mesa y suma el valor acumulado.
+     * @param palo
+     * @param valor
+     */
+    public void agregarCartaEnMesa(String palo, double valor) {
+
+        switch (palo) {
+            case "ORO" -> {
+                sumaValorPilaOro += valor;
+                sumOro.setText("Acumulado: " + sumaValorPilaOro);
+            }
+            case "BASTO" -> {
+                sumaValorPilaBasto += valor;
+                sumBasto.setText("Acumulado: " + sumaValorPilaBasto);
+            }
+            case "ESPADA" -> {
+                sumaValorPilaEspada += valor;
+                sumEspada.setText("Acumulado: " + sumaValorPilaEspada);
+            }
+        }
+    }
+
+    public void reiniciarPila(String pilaAReiniciar) {
+        if(pilaAReiniciar.equals("ORO")) {
+            sumaValorPilaOro = 0;
+            sumOro.setText("Acumulado: 0");
+
+        }
+        else if (pilaAReiniciar.equals("BASTO")) {
+            sumaValorPilaBasto = 0;
+            sumBasto.setText("Acumulado: 0");
+
+        }
+        else {
+            sumaValorPilaEspada = 0;
+            sumEspada.setText("Acumulado: 0");
+
+        }
+    }
+
+    public void levantarCartas(int puntos) {
+        if (puntos > 0) {
+
+            pantallaMenu.mostrarMensaje("Envenenado! sumas " + puntos + " puntos.");
+            this.puntos += puntos;
+            panelPuntos.setText("Puntos: " + this.puntos);
+        }
+        else {
+            pantallaMenu.mostrarMensaje("Uuuf, que cerca! No sumaste puntos! :)");
+        }
+    }
+
+
+
+
 
 
     /* ------------- Funciones para crear componentes de la ventana ------------ */

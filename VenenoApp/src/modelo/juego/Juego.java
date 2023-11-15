@@ -163,6 +163,112 @@ public class Juego extends ObservableRemoto implements IJuego {
         notificarObservadores(Evento.TURNO);
     }
 
+
+    public void tirarCarta(int carta, String palo) throws RemoteException {
+
+        cartaJugadaTurnoActual = jugadores.get(jugadorActual).getCartasEnMano().get(carta);
+        indiceCartaJugadaTurnoActual = carta;
+        System.out.println("se tiro la carta " + cartaJugadaTurnoActual + " del indice " + carta);
+        reiniciarPila = false;
+        if (palo.equals(Palo.BASTO.toString())) {
+            pilaBasto.agregarCarta(cartaJugadaTurnoActual); //agrego primero la carta a la pila de la mesa
+            jugadores.get(jugadorActual).tirarCarta(carta); //tiro la carta de la mano del jugador
+
+            if(verificarSumaPila(pilaBasto,jugadorActual)) {
+                pilaAReiniciar = pilaBasto.getPalo().toString();
+                reiniciarPila = true;
+            }
+        }
+        else if (palo.equals(Palo.ORO.toString())) {
+            pilaOro.agregarCarta(cartaJugadaTurnoActual);
+            jugadores.get(jugadorActual).tirarCarta(carta);
+
+            if(verificarSumaPila(pilaOro,jugadorActual)) {
+                pilaAReiniciar = pilaOro.getPalo().toString();
+                reiniciarPila = true;
+            }
+        }
+        else if (palo.equals(Palo.ESPADA.toString())) {
+            pilaEspada.agregarCarta(cartaJugadaTurnoActual);
+            jugadores.get(jugadorActual).tirarCarta(carta);
+
+            if(verificarSumaPila(pilaEspada,jugadorActual)) {
+                pilaAReiniciar = pilaEspada.getPalo().toString();
+                reiniciarPila = true;
+            }
+        }
+
+        /* Modifico el palo de la carta jugada segun la pila en la que se agrega
+           (en caso de que la carta sea copa simularia un casteo del palo) */
+        cartaJugadaTurnoActual.setPalo(Palo.valueOf(palo));
+
+        this.manosJugadas++;
+        notificarObservadores(Evento.CARTA_JUGADA);
+        pasarTurno();
+    }
+
+    /**
+     * Verifica la suma de la pila en la mesa, si supera los 13 puntos se reinicia la pila y el jugador suma,
+     * en el caso de ser necesario, los puntos correspondientes a la cantidad de cartas de copa que posee la pila.
+     * @param pila
+     * @param jugadorActual
+     * @return
+     * @throws RemoteException
+     */
+    public boolean verificarSumaPila(PilaPalo pila, int jugadorActual) throws RemoteException {
+
+        boolean levantarCartas = false;
+
+        if (pila.getSumaValores() >= PilaPalo.getSumaMinima()) {
+
+            /*Si supera el limite de valor acumulado, calculo cuantos puntos se le sumarian al jugador
+            (cada carta de copa que levante se le suma un punto) */
+
+            int puntos = 0;
+            for (Carta c : pila.getCartasEnMesa()) {
+                if(c.isCopa()) {
+                    puntos ++;
+                }
+            }
+            jugadores.get(jugadorActual).setPuntos(puntos);
+            pila.reinicarPila();
+            levantarCartas = true;
+        }
+
+        return levantarCartas;
+    }
+
+
+    public void pasarTurno() throws RemoteException {
+
+        /* jugador anterior setea turno en false y pasa al siguiente */
+        jugadores.get(jugadorActual).setMiTurno(false);
+        jugadorActual = (jugadorActual + 1) % cantidadJugadores;
+        jugadores.get(jugadorActual).setMiTurno(true);
+
+        /* Se va a pasar turnos hasta que todos los jugadores tiren sus 4 cartas
+         * luego se inicia una nueva ronda en caso de quedar rondas por jugar o
+         * termina la partida */
+        if (manosJugadas < this.cantidadJugadores * 4) {
+            notificarObservadores(Evento.TURNO);
+        }
+        else {
+            System.out.println("nueva ronda");
+            this.manosJugadas = 0;
+
+            /* Aca se crea el bucle de la cantidad de rondas */
+            if (rondaActual <= cantidadRondas) {
+
+                jugarRonda();
+            }
+            else {
+
+//                    finPartida();
+            }
+        }
+
+    }
+
     /**
      * Retorno el jugador del turno actual.
      * @return

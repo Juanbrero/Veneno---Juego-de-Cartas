@@ -60,6 +60,14 @@ public class Controlador implements IControladorRemoto {
                 case TURNO:
                     updateTurno();
                     break;
+                case CARTA_JUGADA:
+                    if(juego.isReiniciarPila()) {
+                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaAReiniciar(), juego.getJugadores().get(this.id).getPuntos());
+                    }
+                    else {
+                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila() , "", 0);
+                    }
+                    break;
             }
         }
 
@@ -102,6 +110,27 @@ public class Controlador implements IControladorRemoto {
         }
 
     }
+
+    /**
+     * Recibe la carta a tirar y se la pasa al modelo.
+     * @param carta
+     * @param palo
+     */
+    public void tirarCarta(int carta, String palo) {
+        try {
+            if (miTurno) {
+                juego.tirarCarta(carta, palo);
+            }
+            else {
+                vista.mostrarMensaje("Turno del jugador " + juego.obtenerJugadorActual().getNombre() + "!");
+            }
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     /**
      * Si faltan jugadores por conectarse, creo una cola de espera.
@@ -172,6 +201,34 @@ public class Controlador implements IControladorRemoto {
         }
     }
 
+    private void updateCartaJugada(int cartaJugada, Carta carta, boolean reiniciarPila, String pilaAReiniciar, int puntos) {
+
+        try {
+            if (miTurno) {
+
+                /* Actualizo la informacion del jugador luego de jugar el turno. */
+                this.jugador = juego.getJugadores().get(this.id);
+
+                vista.tirarCarta(cartaJugada);
+                /* Si al tirar la carta me toca levantar la pila de la mesa */
+                if (reiniciarPila) {
+                    this.vista.levantarCartas(puntos);
+                }
+            }
+            if (!reiniciarPila) {
+
+                vista.agregarCartaEnMesa(carta.getPalo().toString(),carta.getValor());
+            }
+            else {
+                vista.reiniciarPila(pilaAReiniciar);
+            }
+
+//            juego.pasarTurno();
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

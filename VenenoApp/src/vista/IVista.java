@@ -13,4 +13,14 @@ public interface IVista {
     void reiniciarMano();
 
     void jugarTurno();
+
+    void mostrarMensaje(String s);
+
+    void tirarCarta(int cartaJugada);
+
+    void agregarCartaEnMesa(String string, double valor);
+
+    void reiniciarPila(String pilaAReiniciar);
+
+    void levantarCartas(int puntos);
 }
