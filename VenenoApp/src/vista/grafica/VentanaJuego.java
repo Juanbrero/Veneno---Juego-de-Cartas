@@ -43,6 +43,7 @@ public class VentanaJuego {
     private JLabel jugador3;
     private JLabel jugador4;
 
+
     public VentanaJuego(String nombreJugador) {
 
         this.nombre = nombreJugador;
@@ -63,8 +64,65 @@ public class VentanaJuego {
     }
 
 
+    /**
+     * Informa al controlador de la carta a tirar. Verifica si la carta es de copa, en dicho caso pide seleccionar
+     * la pila de cartas a envenenar.
+     * @param indice
+     * @param palo
+     */
+    public void seleccionarPila(int indice, String palo) {
+
+        if (palo.equals("COPA")) {
+
+            JPanel veneno = new JPanel(new GridLayout(2,1));
+            JLabel mensaje = new JLabel("Veneno! - Selecciona el pilon de cartas que queres envenenar");
+            JPanel opciones = new JPanel(new FlowLayout());
+
+            veneno.add(mensaje);
+            veneno.add(opciones);
+
+            JButton oro = new JButton("Oro");
+            opciones.add(oro);
+            oro.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controlador.tirarCarta(indice,"ORO");
+                }
+            });
+
+            JButton basto = new JButton("Basto");
+            opciones.add(basto);
+            basto.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controlador.tirarCarta(indice, "BASTO");
+                }
+            });
+
+            JButton espada = new JButton("Espada");
+            opciones.add(espada);
+            espada.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controlador.tirarCarta(indice,"ESPADA");
+                }
+            });
+
+
+            nuevoDialogo(veneno);
+
+        }
+        else {
+            controlador.tirarCarta(indice, palo);
+        }
+    }
+
+
     /* ------------- Funciones para crear componentes de la ventana ------------ */
 
+    /**
+     * Crea las pilas de cartas de la mesa.
+     */
     private void pilasEnMesa() {
 
         pilasEnMesa = new JPanel(new FlowLayout());
@@ -100,6 +158,9 @@ public class VentanaJuego {
         pilas.add(pilaEspada);
     }
 
+    /**
+     * Crea la mano de cartas del jugador.
+     */
     private void cartasEnMano() {
 
         mano = new JPanel(new FlowLayout());
@@ -115,6 +176,9 @@ public class VentanaJuego {
         panelInfoJugador.add(panelPuntos);
     }
 
+    /**
+     * Crea los espacios que representan al resto de jugadores.
+     */
     private void panelesJugadores() {
 
         //Uso los bloques del border layout como flow layouts
@@ -145,6 +209,12 @@ public class VentanaJuego {
 
     }
 
+    /**
+     * Crea la vista de una instancia de carta.
+     * @param palo
+     * @param numero
+     * @param indice
+     */
     public void generarCarta(String palo, int numero, int indice) {
 
         vistaCarta = new JPanel(new GridLayout(3,1));
@@ -170,7 +240,7 @@ public class VentanaJuego {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("yo soy la carta" + numero + " " + palo + " del indice " + indice);
-//                seleccionarPila(indice, palo);
+                seleccionarPila(indice, palo);
             }
         });
         botonCarta.setPreferredSize(new Dimension(100,150));
@@ -186,6 +256,9 @@ public class VentanaJuego {
 
     }
 
+    /**
+     * Reinicia la mano de cartas del jugador al inicio de cada ronda.
+     */
     public void reiniciarMano() {
 
         cartasEnMano.removeAll();

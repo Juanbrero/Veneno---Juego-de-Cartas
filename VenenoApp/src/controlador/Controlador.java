@@ -57,14 +57,19 @@ public class Controlador implements IControladorRemoto {
                 case START:
                     vista.iniciarPartida();
                     break;
-
+                case TURNO:
+                    updateTurno();
+                    break;
             }
         }
 
     }
 
 
-
+    /**
+     * Seteo la cantidad de jugadores de la partida
+     * @param cantidad
+     */
     public void cantidadJugadores(int cantidad) {
 
         try {
@@ -75,6 +80,10 @@ public class Controlador implements IControladorRemoto {
         }
     }
 
+    /**
+     * Conecta el controlador al modelo. Guarda la referencia a la instancia de jugador creada en el modelo.
+     * @param nombre
+     */
     public void conectarse(String nombre) {
 
         try {
@@ -94,7 +103,9 @@ public class Controlador implements IControladorRemoto {
 
     }
 
-
+    /**
+     * Si faltan jugadores por conectarse, creo una cola de espera.
+     */
     private void updateJugadorConectado() {
 
         try {
@@ -110,6 +121,9 @@ public class Controlador implements IControladorRemoto {
 
     }
 
+    /**
+     * Informa el inicio de cada ronda. Genera las cartas correspondientes a cada jugador
+     */
     private void updateInicioRonda() {
 
         int i = 0;
@@ -141,6 +155,22 @@ public class Controlador implements IControladorRemoto {
 
     }
 
+    private void updateTurno() {
+
+        try {
+            if (this.juego.obtenerJugadorActual().getId() == this.jugador.getId()) {
+                miTurno = true;
+                System.out.println("controlador > tu turno!");
+                vista.jugarTurno();
+            }
+            else {
+                miTurno = false;
+            }
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

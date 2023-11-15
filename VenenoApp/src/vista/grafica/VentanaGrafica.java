@@ -55,10 +55,18 @@ public class VentanaGrafica implements IVista {
         this.controlador = controlador;
     }
 
+    /**
+     * Setea la pantalla principal como visible.
+     */
     public void iniciar() {
         pantallaMenu.setVisible(true);
     }
 
+    /**
+     * Crea el panel de la cola de espera.
+     * @param conectados
+     * @param jugadores
+     */
     public void colaDeEspera(int conectados, int jugadores) {
 
         colaEspera = new JDialog(pantallaMenu);
@@ -76,6 +84,9 @@ public class VentanaGrafica implements IVista {
 
     }
 
+    /**
+     * Crea la pantalla de la partida.
+     */
     public void iniciarPartida() {
         if (colaEspera != null) {
             System.out.println("vista > en cola de espera");
@@ -88,15 +99,29 @@ public class VentanaGrafica implements IVista {
 
     }
 
+    /**
+     * Genera una instancia de carta.
+     * @param palo
+     * @param nro
+     * @param i
+     */
     @Override
     public void generarCarta(String palo, int nro, int i) {
         this.pantallaJuego.generarCarta(palo, nro, i);
     }
 
+    /**
+     * Reinicia las cartas de la mano al comenzar una nueva ronda.
+     */
     public void reiniciarMano() {
 
         pantallaJuego.reiniciarMano();
 
+    }
+
+    @Override
+    public void jugarTurno() {
+        mostrarMensaje("Tu turno!");
     }
 
 
@@ -110,7 +135,11 @@ public class VentanaGrafica implements IVista {
 
     }
 
-    public void nuevoDialogo(JPanel panel) {
+    /**
+     * Crea un nuevo Cartel de dialogo.
+     * @param panel
+     */
+    private void nuevoDialogo(JPanel panel) {
 
         JDialog panelDialogo = new JDialog();
         panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -145,6 +174,9 @@ public class VentanaGrafica implements IVista {
 
     /* ------------- Funciones para crear componentes de la ventana ------------ */
 
+    /**
+     * Crea los paneles principales de la ventana.
+     */
     private void panelesGenerales() {
 
         //Panel general
@@ -166,6 +198,9 @@ public class VentanaGrafica implements IVista {
         menuOpciones.add(cartelMenuPrincipal); // agrego el titulo del menu
     }
 
+    /**
+     * Crea los paneles donde van los datos del jugador.
+     */
     private void datosUsuario() {
 
         //Datos del jugador
@@ -178,6 +213,9 @@ public class VentanaGrafica implements IVista {
         menuOpciones.add(datos);
     }
 
+    /**
+     * Crea los paneles del menu de botones para seleccionar la cantidad de jugadores.
+     */
     private void menuCantidadJugadores() {
 
         //Panel que contiene los radio buttons para indicar cantidad de jugadores
@@ -225,6 +263,9 @@ public class VentanaGrafica implements IVista {
         selectJugadores.add(op3);
     }
 
+    /**
+     * Crea el boton de inicio y define su actionListener.
+     */
     private void botonStart() {
 
         //Boton de start

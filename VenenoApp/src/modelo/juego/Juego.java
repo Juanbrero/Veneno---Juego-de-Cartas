@@ -92,8 +92,8 @@ public class Juego extends ObservableRemoto implements IJuego {
         return this.resultadosFinales;
     }
 
-    /* ----------- Metodos del modelo ----------- */
 
+    /* ----------- Metodos del modelo ----------- */
 
     /**
      * Cuando un jugador nuevo se conecta a la partida, lo instancia, se agrega a la lista de jugadores y lo retorna al
@@ -118,6 +118,10 @@ public class Juego extends ObservableRemoto implements IJuego {
         return nuevoJugador;
     }
 
+    /**
+     * Notifica a los observadores que inicia la partida para crear la vista de la partida e inicia la primera ronda.
+     * @throws RemoteException
+     */
     public void iniciarJuego() throws RemoteException {
 
         notificarObservadores(Evento.START);
@@ -125,6 +129,9 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     }
 
+    /**
+     * Se reparten las cartas a los jugadores logicos del modelo.
+     */
     public void repartirCartas() {
 
         try {
@@ -132,14 +139,13 @@ public class Juego extends ObservableRemoto implements IJuego {
             for (int i = 0; i < getCantidadJugadores(); i++) {
                 System.out.println("juego > jugador " + jugadores.get(i).getNombre() + " recibe sus cartas" );
                 jugadores.get(i).recibirCartas(mazo.repartir());
-
             }
-
         }
         catch (RemoteException e) {
             e.printStackTrace();
         }
     }
+
 
     public void jugarRonda() throws RemoteException {
 
@@ -157,6 +163,11 @@ public class Juego extends ObservableRemoto implements IJuego {
         notificarObservadores(Evento.TURNO);
     }
 
+    /**
+     * Retorno el jugador del turno actual.
+     * @return
+     * @throws RemoteException
+     */
     public Jugador obtenerJugadorActual() throws RemoteException {
         return jugadores.get(jugadorActual);
     }

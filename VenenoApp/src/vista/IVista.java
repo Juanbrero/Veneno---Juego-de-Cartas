@@ -11,4 +11,6 @@ public interface IVista {
     void generarCarta(String string, int nro, int i);
 
     void reiniciarMano();
+
+    void jugarTurno();
 }
