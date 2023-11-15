@@ -8,12 +8,14 @@ import java.util.ArrayList;
 public class Jugador implements Serializable {
 
     private String nombre;
+    private int id;
     private int puntos = 0;
     private boolean miTurno = false;
     private ArrayList<Carta> cartasEnMano = new ArrayList<>();
 
-    public Jugador(String nombre) {
+    public Jugador(String nombre, int id) {
         this.nombre = nombre;
+        this.id = id;
     }
 
     public ArrayList<Carta> getCartasEnMano() {
@@ -22,6 +24,10 @@ public class Jugador implements Serializable {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public int getPuntos() {

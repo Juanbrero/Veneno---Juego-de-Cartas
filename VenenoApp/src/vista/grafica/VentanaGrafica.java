@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 
 public class VentanaGrafica implements IVista {
 
@@ -62,7 +63,7 @@ public class VentanaGrafica implements IVista {
 
         colaEspera = new JDialog(pantallaMenu);
         colaEspera.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        colaEspera.setSize(200, 120);
+        colaEspera.setSize(260, 95);
         colaEspera.setLocationRelativeTo(null);
         colaEspera.setTitle("Cola de espera");
         colaEspera.setLayout(new FlowLayout());
@@ -82,7 +83,9 @@ public class VentanaGrafica implements IVista {
         }
         pantallaMenu.setVisible(false);
         System.out.println("vista > arrancamossss");
-        VentanaJuego partida = new VentanaJuego(this.nombre);
+
+        pantallaJuego = new VentanaJuego(nombre);
+
     }
 
     @Override

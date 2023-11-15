@@ -16,6 +16,7 @@ public class Controlador implements IControladorRemoto {
 
     private IVista vista;
     private Jugador jugador;
+    private int id;
     private IJuego juego;
     private boolean miTurno;
 
@@ -52,10 +53,16 @@ public class Controlador implements IControladorRemoto {
                     break;
                 case INICIO_RONDA:
                     updateInicioRonda();
+                    break;
+                case START:
+                    vista.iniciarPartida();
+                    break;
+
             }
         }
 
     }
+
 
 
     public void cantidadJugadores(int cantidad) {
@@ -73,8 +80,13 @@ public class Controlador implements IControladorRemoto {
         try {
             System.out.println("controlador > me voy a conectar como jugador " + nombre);
             this.jugador = juego.agregarJugador(nombre);
+            this.id = jugador.getId();
+            System.out.println("controlador > id this.jugador = " + jugador);
             System.out.println("controlar > soy " + jugador.getNombre());
-
+            if(juego.getJugadoresConectados() == juego.getCantidadJugadores()) {
+                System.out.println("controlador > jugar ronda");
+                juego.iniciarJuego();
+            }
         }
         catch (RemoteException e) {
             e.printStackTrace();
@@ -91,14 +103,6 @@ public class Controlador implements IControladorRemoto {
                 System.out.println("controlador > en cola de espera");
                 vista.colaDeEspera(this.juego.getJugadoresConectados(), this.juego.getCantidadJugadores());
             }
-            else if (this.juego.getJugadoresConectados() == this.juego.getCantidadJugadores()) {
-                /* Cuando ingresan todos los jugadores termino la cola de espera e inicia la partida */
-                System.out.println("controlador > arranca");
-                
-                vista.iniciarPartida();
-
-            }
-
         }
         catch (RemoteException e) {
             e.printStackTrace();
@@ -109,17 +113,30 @@ public class Controlador implements IControladorRemoto {
     private void updateInicioRonda() {
 
         int i = 0;
+        try {
 
-        if (!this.jugador.getCartasEnMano().isEmpty()){
+            if (!this.jugador.getCartasEnMano().isEmpty()){
 
-            vista.reiniciarMano();
+                System.out.println("controlador > reinicio la mano del jugador");
+                vista.reiniciarMano();
+            }
+
+            this.jugador.recibirCartas(juego.getJugadores().get(this.id).getCartasEnMano());
+
+
+            System.out.println("controlador > soy " + jugador.getNombre());
+
+            System.out.println("el jugador tiene " + this.jugador.getCartasEnMano().size() + " cartas");
+            System.out.println("controlador > se reparten las cartas");
+            for (Carta c : this.jugador.getCartasEnMano()) {  // CONTROLAR ESTA PARTE QUE NO ENTRA
+                System.out.println("Controlador recibe carta " + c.getNro() + " " + c.getPalo() + "en indice " + i);
+                vista.generarCarta(c.getPalo().toString(), c.getNro(), i);
+                i++;
+            }
+
         }
-
-        System.out.println("controlador > se reparten las cartas");
-        for (Carta c : this.jugador.getCartasEnMano()) {  // CONTROLAR ESTA PARTE QUE NO ENTRA
-            System.out.println("Controlador recibe carta " + c.getNro() + " " + c.getPalo() + "en indice " + i);
-            vista.generarCarta(c.getPalo().toString(), c.getNro(), i);
-            i++;
+        catch (RemoteException e) {
+            e.printStackTrace();
         }
 
     }

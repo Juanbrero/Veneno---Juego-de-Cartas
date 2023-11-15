@@ -36,6 +36,10 @@ public interface IJuego extends IObservableRemoto {
 
     Jugador obtenerJugadorActual() throws RemoteException;
 
+    void iniciarJuego() throws RemoteException;
+
+    void repartirCartas() throws RemoteException;
+
     void jugarRonda() throws RemoteException;
 
 }

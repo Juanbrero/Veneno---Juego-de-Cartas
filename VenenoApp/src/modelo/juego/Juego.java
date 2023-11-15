@@ -20,7 +20,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private PilaPalo pilaBasto;
     private Mazo mazo;
     private ArrayList<Jugador> jugadores = new ArrayList<>();
-    private int cantidadJugadores = 2;
+    private int cantidadJugadores;
     private int jugadoresConectados = 0;
     private int jugadorActual = 0;
     private int cantidadRondas = 2;
@@ -94,6 +94,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     /* ----------- Metodos del modelo ----------- */
 
+
     /**
      * Cuando un jugador nuevo se conecta a la partida, lo instancia, se agrega a la lista de jugadores y lo retorna al
      * controlador. Notifica a los observadores de la conexion.
@@ -106,26 +107,46 @@ public class Juego extends ObservableRemoto implements IJuego {
         /* Crea un nuevo jugador y lo agrega a la lista,
          * incrementa la cantidad de jugadores conectados.
         */
-        Jugador nuevoJugador = new Jugador(nombre);
+        Jugador nuevoJugador = new Jugador(nombre, jugadoresConectados);
         this.jugadores.add(nuevoJugador);
         this.jugadoresConectados++;
         System.out.println("juego > cree el jugador " + nuevoJugador.getNombre());
+        System.out.println("juego > id jugador creado = " + nuevoJugador);
 
         notificarObservadores(Evento.JUGADOR_CONECTADO);
 
         return nuevoJugador;
     }
 
+    public void iniciarJuego() throws RemoteException {
+
+        notificarObservadores(Evento.START);
+        jugarRonda();
+
+    }
+
+    public void repartirCartas() {
+
+        try {
+            System.out.println("juego > se reparten las cartas");
+            for (int i = 0; i < getCantidadJugadores(); i++) {
+                System.out.println("juego > jugador " + jugadores.get(i).getNombre() + " recibe sus cartas" );
+                jugadores.get(i).recibirCartas(mazo.repartir());
+
+            }
+
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void jugarRonda() throws RemoteException {
 
         this.rondaActual++;
-        // Se reparten las cartas al inicio de cada ronda.
-        System.out.println("juego > se reparten las cartas");
-        for (int i = 0; i < getCantidadJugadores(); i++) {
-            System.out.println("juego > jugador " + jugadores.get(i).getNombre() + "recibe sus cartas" );
-            jugadores.get(i).recibirCartas(mazo.repartir());
 
-        }
+        repartirCartas();
+
         System.out.println("juego > inicia ronda");
         notificarObservadores(Evento.INICIO_RONDA);
 
