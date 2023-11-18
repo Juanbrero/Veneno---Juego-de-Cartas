@@ -1,6 +1,7 @@
 package vista.grafica;
 
 import controlador.Controlador;
+import modelo.baraja.Carta;
 import vista.IVista;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class VentanaGrafica implements IVista {
 
@@ -27,6 +29,7 @@ public class VentanaGrafica implements IVista {
     private JTextField nombreUsuario;
     private String nombre;
     JDialog colaEspera;
+
 
     public VentanaGrafica(Controlador controlador) {
         this.setControlador(controlador);
@@ -51,13 +54,16 @@ public class VentanaGrafica implements IVista {
 
     }
 
+
     private void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
 
+
     public Controlador getControlador() {
         return this.controlador;
     }
+
 
     /**
      * Setea la pantalla principal como visible.
@@ -65,6 +71,7 @@ public class VentanaGrafica implements IVista {
     public void iniciar() {
         pantallaMenu.setVisible(true);
     }
+
 
     /**
      * Crea el panel de la cola de espera.
@@ -88,6 +95,7 @@ public class VentanaGrafica implements IVista {
 
     }
 
+
     /**
      * Crea la pantalla de la partida.
      */
@@ -103,15 +111,14 @@ public class VentanaGrafica implements IVista {
 
     }
 
+
     /**
-     * Genera una instancia de carta.
-     * @param palo
-     * @param nro
-     * @param i
+     * Llama al metodo para crear las vistas de cada carta.
+     * @param cartas
      */
-    @Override
-    public void generarCarta(String palo, int nro, int i) {
-        this.pantallaJuego.generarCarta(palo, nro, i);
+    public void generarCartas(ArrayList<Carta> cartas) {
+
+        this.pantallaJuego.generarCartas(cartas);
     }
 
     /**
@@ -123,27 +130,77 @@ public class VentanaGrafica implements IVista {
 
     }
 
+
     @Override
     public void jugarTurno() {
         mostrarMensaje("Tu turno!");
     }
+
 
     public void tirarCarta(int cartaJugada) {
         pantallaJuego.tirarCarta(cartaJugada);
 
     }
 
+
     public void agregarCartaEnMesa(String palo, double valor) {
         pantallaJuego.agregarCartaEnMesa(palo, valor);
     }
+
 
     public void reiniciarPila(String pilaAReiniciar) {
         pantallaJuego.reiniciarPila(pilaAReiniciar);
     }
 
+
     public void levantarCartas(int puntos) {
+        System.out.println("vista > puntos: " + puntos);
         pantallaJuego.levantarCartas(puntos);
     }
+
+
+    public void finJuego(ArrayList<String> resultados) {
+
+        JPanel panelFin = new JPanel(new FlowLayout());
+
+        JLabel tituloFin = new JLabel("¡FIN DEL JUEGO!");
+        panelFin.add(tituloFin);
+
+        JLabel labelResultados = new JLabel("Resultados de la partida:");
+        panelFin.add(labelResultados);
+
+        for (int i = 0; i < resultados.size(); i++) {
+            JLabel jugador = new JLabel(resultados.get(i));
+            panelFin.add(jugador);
+        }
+
+        JDialog panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
+        panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JButton ok = new JButton("OK");
+        JPanel botonOk = new JPanel();
+        botonOk.add(ok);
+        JPanel elementos = new JPanel(new GridLayout(2,1));
+        elementos.add(panelFin);
+        elementos.add(botonOk);
+        panelDialogo.add(elementos);
+
+        panelDialogo.setSize(250, 250);
+        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
+
+        ok.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelDialogo.dispose();
+                pantallaJuego.getPantallaJuego().dispose();
+                pantallaMenu.setVisible(true);
+            }
+        });
+
+        panelDialogo.setVisible(true);
+
+    }
+
 
     public void mostrarMensaje(String mensaje) {
 
@@ -155,13 +212,14 @@ public class VentanaGrafica implements IVista {
 
     }
 
+
     /**
      * Crea un nuevo Cartel de dialogo.
      * @param panel
      */
     public void nuevoDialogo(JPanel panel) {
 
-        JDialog panelDialogo = new JDialog();
+        JDialog panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
         panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JButton ok = new JButton("OK");
@@ -173,8 +231,7 @@ public class VentanaGrafica implements IVista {
         panelDialogo.add(elementos);
 
         panelDialogo.setSize(250, 250);
-        panelDialogo.setLocationRelativeTo(null);
-
+        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
 
         ok.addActionListener(new ActionListener() {
             @Override
@@ -184,6 +241,7 @@ public class VentanaGrafica implements IVista {
         });
 
         panelDialogo.setVisible(true);
+
     }
 
 

@@ -39,13 +39,23 @@ public class Mazo {
 
     public ArrayList<Carta> repartir() {
 
-        mezclar();
+//        mezclar();
         int indice = 0;
         ArrayList<Carta> cartas = new ArrayList<>();
-        while (cartasEnMazo.get(indice).isEnMazo() && indice < 4 && cantidadCartasEnMazo > 0) {
-            cartas.add(cartasEnMazo.get(indice));
-            cartasEnMazo.get(indice).setEnMazo(false);
-            this.cantidadCartasEnMazo--;
+        while (indice < MAX_CARTAS && cantidadCartasEnMazo > 0 && cartas.size() < 4) {
+
+//            if(cartas.size() == 4) {
+//                break;
+//            }
+//            else {
+
+                if (cartasEnMazo.get(indice).isEnMazo()) {
+
+                    cartas.add(cartasEnMazo.get(indice));
+                    cartasEnMazo.get(indice).setEnMazo(false);
+                    this.cantidadCartasEnMazo--;
+                }
+//            }
             indice++;
         }
         return cartas;

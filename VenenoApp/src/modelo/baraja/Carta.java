@@ -25,6 +25,7 @@ public class Carta implements Serializable {
         }
     }
 
+
     public Palo getPalo() {
         return palo;
     }

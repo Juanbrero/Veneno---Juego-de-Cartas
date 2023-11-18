@@ -34,8 +34,6 @@ public interface IJuego extends IObservableRemoto {
 
     Jugador agregarJugador(String nombre) throws RemoteException;
 
-    Jugador obtenerJugadorActual() throws RemoteException;
-
     void iniciarJuego() throws RemoteException;
 
     void repartirCartas() throws RemoteException;
@@ -48,5 +46,8 @@ public interface IJuego extends IObservableRemoto {
 
     void pasarTurno() throws RemoteException;
 
+    void finPartida() throws RemoteException;
+
+    Jugador obtenerJugadorActual() throws RemoteException;
 
 }

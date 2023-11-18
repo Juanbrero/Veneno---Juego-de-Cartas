@@ -1,10 +1,15 @@
 package vista.grafica;
 
+import modelo.baraja.Carta;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class VentanaJuego {
 
@@ -19,9 +24,8 @@ public class VentanaJuego {
     private JPanel pilaEspada;
     private JPanel cartasEnMano;
     private JPanel mano;
-    private JButton[] cartas = new JButton[4];
+    private JPanel[] cartas = new JPanel[4];
     private JPanel vistaCarta;
-    private JButton botonCarta;
     private double sumaValorPilaOro = 0;
     private double sumaValorPilaBasto = 0;
     private double sumaValorPilaEspada = 0;
@@ -64,6 +68,10 @@ public class VentanaJuego {
         pantallaJuego.setVisible(true);
     }
 
+
+    public JFrame getPantallaJuego() {
+        return pantallaJuego;
+    }
 
     /**
      * Informa al controlador de la carta a tirar. Verifica si la carta es de copa, en dicho caso pide seleccionar
@@ -118,6 +126,7 @@ public class VentanaJuego {
         }
     }
 
+
     /**
      * Baja logica de la carta tirada.
      * @param cartaJugada
@@ -126,6 +135,7 @@ public class VentanaJuego {
         cartas[cartaJugada].setVisible(false);
 
     }
+
 
     /**
      * Agrega la carta tirada a la pila correspondiente de la mesa y suma el valor acumulado.
@@ -150,6 +160,11 @@ public class VentanaJuego {
         }
     }
 
+
+    /** Reinicia el valor de la pila de la mesa cuando un jugador debe levantar las cartas.
+     *
+     * @param pilaAReiniciar
+     */
     public void reiniciarPila(String pilaAReiniciar) {
         if(pilaAReiniciar.equals("ORO")) {
             sumaValorPilaOro = 0;
@@ -168,6 +183,11 @@ public class VentanaJuego {
         }
     }
 
+
+    /**
+     * Informa al jugador que debe levantar las cartas de la mesa y si suma puntos o no.
+     * @param puntos
+     */
     public void levantarCartas(int puntos) {
         if (puntos > 0) {
 
@@ -182,10 +202,8 @@ public class VentanaJuego {
 
 
 
+    /* ------------- Funciones para crear o modificar componentes de la ventana ------------ */
 
-
-
-    /* ------------- Funciones para crear componentes de la ventana ------------ */
 
     /**
      * Crea las pilas de cartas de la mesa.
@@ -225,6 +243,7 @@ public class VentanaJuego {
         pilas.add(pilaEspada);
     }
 
+
     /**
      * Crea la mano de cartas del jugador.
      */
@@ -242,6 +261,7 @@ public class VentanaJuego {
         panelInfoJugador.add(new JLabel("Jugador: " + nombre));
         panelInfoJugador.add(panelPuntos);
     }
+
 
     /**
      * Crea los espacios que representan al resto de jugadores.
@@ -276,52 +296,50 @@ public class VentanaJuego {
 
     }
 
+
     /**
-     * Crea la vista de una instancia de carta.
-     * @param palo
-     * @param numero
-     * @param indice
+     * Crea las vistas de las cartas del jugador.
+     * @param cartasmano
      */
-    public void generarCarta(String palo, int numero, int indice) {
+    public void generarCartas(ArrayList<Carta> cartasmano) {
 
-        vistaCarta = new JPanel(new GridLayout(3,1));
-        vistaCarta.setBorder(new LineBorder(Color.BLACK, 3));
-        vistaCarta.setPreferredSize(new Dimension(100,150));
+        for (Carta c : cartasmano) {
 
-        nroCartaSup = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        vistaCarta.add(nroCartaSup);
-        paloCarta = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        vistaCarta.add(paloCarta);
-        nroCartaInf = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        vistaCarta.add(nroCartaInf);
+            vistaCarta = new JPanel(new GridLayout(3,1));
+            vistaCarta.setBorder(new LineBorder(Color.BLACK, 3));
+            vistaCarta.setPreferredSize(new Dimension(100,150));
 
-        nroCarta1 = new JLabel("" + numero);
-        nroCartaSup.add(nroCarta1);
-        nroCarta2 = new JLabel("" + numero);
-        nroCartaInf.add(nroCarta2);
-        panelPalo = new JLabel(palo);
-        paloCarta.add(panelPalo);
+            nroCartaSup = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            vistaCarta.add(nroCartaSup);
+            paloCarta = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            vistaCarta.add(paloCarta);
+            nroCartaInf = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            vistaCarta.add(nroCartaInf);
 
-        botonCarta = new JButton();
-        botonCarta.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("yo soy la carta" + numero + " " + palo + " del indice " + indice);
-                seleccionarPila(indice, palo);
-            }
-        });
-        botonCarta.setPreferredSize(new Dimension(100,150));
-        botonCarta.add(vistaCarta);
-        botonCarta.setVisible(true);
+            nroCarta1 = new JLabel("" + c.getNro());
+            nroCartaSup.add(nroCarta1);
+            nroCarta2 = new JLabel("" + c.getNro());
+            nroCartaInf.add(nroCarta2);
+            panelPalo = new JLabel(c.getPalo().toString());
+            paloCarta.add(panelPalo);
 
-        //Agrego una carta a la mano. desde el controlador se indica que se generen todas.
-        cartasEnMano.add(botonCarta);
-        //Guardo el boton de la carta en un array para poder acceder al elemento despues.
-        cartas[indice] = botonCarta;
+            vistaCarta.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
 
-        System.out.println("Se genero la carta " + numero + " " + palo + " en el indice " + indice);
+                    seleccionarPila(cartasmano.indexOf(c), c.getPalo().toString());
+                }
+            });
+
+            //Agrego una carta a la mano. desde el controlador se indica que se generen todas.
+            cartasEnMano.add(vistaCarta);
+            //Guardo la vista de la carta en un array para poder acceder al elemento despues.
+            cartas[cartasmano.indexOf(c)] = vistaCarta;
+
+        }
 
     }
+
 
     /**
      * Reinicia la mano de cartas del jugador al inicio de cada ronda.

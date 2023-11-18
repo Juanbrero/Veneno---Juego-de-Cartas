@@ -10,6 +10,7 @@ import modelo.jugador.Jugador;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Juego extends ObservableRemoto implements IJuego {
@@ -61,7 +62,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void setCantidadJugadores(int cantidadJugadores) throws RemoteException {
         this.cantidadJugadores = cantidadJugadores;
-        this.setCantidadRondas();
+//        this.setCantidadRondas();
     }
 
     public int getJugadoresConectados() throws RemoteException {
@@ -95,6 +96,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     /* ----------- Metodos del modelo ----------- */
 
+
     /**
      * Cuando un jugador nuevo se conecta a la partida, lo instancia, se agrega a la lista de jugadores y lo retorna al
      * controlador. Notifica a los observadores de la conexion.
@@ -125,9 +127,11 @@ public class Juego extends ObservableRemoto implements IJuego {
     public void iniciarJuego() throws RemoteException {
 
         notificarObservadores(Evento.START);
+        mazo.mezclar();
         jugarRonda();
 
     }
+
 
     /**
      * Se reparten las cartas a los jugadores logicos del modelo.
@@ -139,6 +143,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             for (int i = 0; i < getCantidadJugadores(); i++) {
                 System.out.println("juego > jugador " + jugadores.get(i).getNombre() + " recibe sus cartas" );
                 jugadores.get(i).recibirCartas(mazo.repartir());
+                System.out.println("juego > se repartieron " + jugadores.get(i).getCartasEnMano().size()+ " cartas");
             }
         }
         catch (RemoteException e) {
@@ -147,6 +152,10 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
+    /**
+     * Maneje la logica de jugar una ronda, repartiendo cartas el inicio de esta y notificando el primer turno.
+     * @throws RemoteException
+     */
     public void jugarRonda() throws RemoteException {
 
         this.rondaActual++;
@@ -164,11 +173,17 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
+    /**
+     * Maneja la logica de tirar una carta. Verifica si se debe reiniciar la pila de la mesa y pasa el turno.
+     * @param carta
+     * @param palo
+     * @throws RemoteException
+     */
     public void tirarCarta(int carta, String palo) throws RemoteException {
 
         cartaJugadaTurnoActual = jugadores.get(jugadorActual).getCartasEnMano().get(carta);
         indiceCartaJugadaTurnoActual = carta;
-        System.out.println("se tiro la carta " + cartaJugadaTurnoActual + " del indice " + carta);
+        System.out.println("se tiro la carta " + cartaJugadaTurnoActual.getPalo() + " del indice " + carta);
         reiniciarPila = false;
         if (palo.equals(Palo.BASTO.toString())) {
             pilaBasto.agregarCarta(cartaJugadaTurnoActual); //agrego primero la carta a la pila de la mesa
@@ -207,6 +222,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         pasarTurno();
     }
 
+
     /**
      * Verifica la suma de la pila en la mesa, si supera los 13 puntos se reinicia la pila y el jugador suma,
      * en el caso de ser necesario, los puntos correspondientes a la cantidad de cartas de copa que posee la pila.
@@ -224,13 +240,18 @@ public class Juego extends ObservableRemoto implements IJuego {
             /*Si supera el limite de valor acumulado, calculo cuantos puntos se le sumarian al jugador
             (cada carta de copa que levante se le suma un punto) */
 
-            int puntos = 0;
+//            int puntos = 0;
+            System.out.println("juego > cartas en la pila " + pila.getPalo().toString() + pila.getCartasEnMesa());
             for (Carta c : pila.getCartasEnMesa()) {
+                System.out.println(c.getPalo().toString());
                 if(c.isCopa()) {
-                    puntos ++;
+//                    puntos ++;
+                    pila.setPuntosALevantar(pila.getPuntosALevantar() + 1);
+                    System.out.println("juego > carta de copa + 1 punto");
                 }
             }
-            jugadores.get(jugadorActual).setPuntos(puntos);
+            System.out.println("juego > verificar suma: " + pila.getPuntosALevantar() + " puntos");
+            jugadores.get(jugadorActual).sumarPuntos(pila.getPuntosALevantar());
             pila.reinicarPila();
             levantarCartas = true;
         }
@@ -239,6 +260,10 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
+    /**
+     * Asigna el turno actual al siguiente jugador mientras haya turnos por jugar.
+     * @throws RemoteException
+     */
     public void pasarTurno() throws RemoteException {
 
         /* jugador anterior setea turno en false y pasa al siguiente */
@@ -257,17 +282,26 @@ public class Juego extends ObservableRemoto implements IJuego {
             this.manosJugadas = 0;
 
             /* Aca se crea el bucle de la cantidad de rondas */
-            if (rondaActual <= cantidadRondas) {
-
+            if (rondaActual < cantidadRondas) {
+                System.out.println(rondaActual);
                 jugarRonda();
             }
             else {
 
-//                    finPartida();
+                finPartida();
             }
         }
 
     }
+
+
+    public void finPartida() throws RemoteException {
+
+        //Genero una lista ordenada de los jugadores segun los puntos obtenidos
+        resultadosFinales = jugadores.stream().sorted(Comparator.comparingInt(Jugador::getPuntos)).toList();
+        notificarObservadores(Evento.FIN_JUEGO);
+    }
+
 
     /**
      * Retorno el jugador del turno actual.

@@ -38,10 +38,12 @@ public class Controlador implements IControladorRemoto {
         this.vista = vista;
     }
 
+
     @Override
     public <T extends IObservableRemoto> void setModeloRemoto(T modeloRemoto) throws RemoteException {
         this.juego = (IJuego) modeloRemoto;
     }
+
 
     @Override
     public void actualizar(IObservableRemoto modelo, Object evento) throws RemoteException {
@@ -68,6 +70,9 @@ public class Controlador implements IControladorRemoto {
                         updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila() , "", 0);
                     }
                     break;
+                case FIN_JUEGO:
+                    updateFinJuego(this.juego.getResultadosFinales());
+                    break;
             }
         }
 
@@ -87,6 +92,7 @@ public class Controlador implements IControladorRemoto {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Conecta el controlador al modelo. Guarda la referencia a la instancia de jugador creada en el modelo.
@@ -111,6 +117,7 @@ public class Controlador implements IControladorRemoto {
 
     }
 
+
     /**
      * Recibe la carta a tirar y se la pasa al modelo.
      * @param carta
@@ -131,6 +138,8 @@ public class Controlador implements IControladorRemoto {
     }
 
 
+    /* ------------- Metodos de actualizacion  ------------ */
+
 
     /**
      * Si faltan jugadores por conectarse, creo una cola de espera.
@@ -150,6 +159,7 @@ public class Controlador implements IControladorRemoto {
 
     }
 
+
     /**
      * Informa el inicio de cada ronda. Genera las cartas correspondientes a cada jugador
      */
@@ -166,16 +176,12 @@ public class Controlador implements IControladorRemoto {
 
             this.jugador.recibirCartas(juego.getJugadores().get(this.id).getCartasEnMano());
 
-
             System.out.println("controlador > soy " + jugador.getNombre());
 
             System.out.println("el jugador tiene " + this.jugador.getCartasEnMano().size() + " cartas");
             System.out.println("controlador > se reparten las cartas");
-            for (Carta c : this.jugador.getCartasEnMano()) {  // CONTROLAR ESTA PARTE QUE NO ENTRA
-                System.out.println("Controlador recibe carta " + c.getNro() + " " + c.getPalo() + "en indice " + i);
-                vista.generarCarta(c.getPalo().toString(), c.getNro(), i);
-                i++;
-            }
+
+            vista.generarCartas(this.jugador.getCartasEnMano());
 
         }
         catch (RemoteException e) {
@@ -184,6 +190,10 @@ public class Controlador implements IControladorRemoto {
 
     }
 
+
+    /**
+     * Informa al jugador sobre el turno actual.
+     */
     private void updateTurno() {
 
         try {
@@ -201,6 +211,16 @@ public class Controlador implements IControladorRemoto {
         }
     }
 
+
+    /**
+     * Informa sobre la carta jugada en el turno actual sacandola de la mano.
+     * Determina si se debe agregar la carta a la mesa o se debe reiniciar la y sumar puntos.
+     * @param cartaJugada
+     * @param carta
+     * @param reiniciarPila
+     * @param pilaAReiniciar
+     * @param puntos
+     */
     private void updateCartaJugada(int cartaJugada, Carta carta, boolean reiniciarPila, String pilaAReiniciar, int puntos) {
 
         try {
@@ -212,6 +232,7 @@ public class Controlador implements IControladorRemoto {
                 vista.tirarCarta(cartaJugada);
                 /* Si al tirar la carta me toca levantar la pila de la mesa */
                 if (reiniciarPila) {
+                    System.out.println("controlador > updateCartaJugada: " + puntos + " puntos ");
                     this.vista.levantarCartas(puntos);
                 }
             }
@@ -222,8 +243,6 @@ public class Controlador implements IControladorRemoto {
             else {
                 vista.reiniciarPila(pilaAReiniciar);
             }
-
-//            juego.pasarTurno();
         }
         catch (RemoteException e) {
             e.printStackTrace();
@@ -231,7 +250,17 @@ public class Controlador implements IControladorRemoto {
     }
 
 
+    private void updateFinJuego(List<Jugador> resultadosFinales) {
 
+        ArrayList<String> resultados = new ArrayList<>();
+
+        for (Jugador j : resultadosFinales) {
+            resultados.add("- " + j.getNombre() + "<" + j.getPuntos() + ">");
+
+        }
+
+        vista.finJuego(resultados);
+    }
 
 
 

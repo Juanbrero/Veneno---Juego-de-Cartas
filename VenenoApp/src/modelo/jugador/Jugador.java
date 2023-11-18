@@ -34,9 +34,9 @@ public class Jugador implements Serializable {
         return puntos;
     }
 
-    public void setPuntos(int puntos) {
-        this.puntos += puntos;
-    }
+//    public void setPuntos(int puntos) {
+//        this.puntos += puntos;
+//    }
 
     public boolean isMiTurno() {
         return miTurno;
@@ -64,7 +64,7 @@ public class Jugador implements Serializable {
 
     public void sumarPuntos(int puntos) {
 
-        this.setPuntos(this.getPuntos() + puntos);
+        this.puntos += puntos;
 
     }
 

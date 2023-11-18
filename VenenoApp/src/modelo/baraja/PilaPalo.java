@@ -9,6 +9,7 @@ public class PilaPalo {
     private ArrayList<Carta> cartasEnMesa = new ArrayList<>();
     private Palo palo;
     private double sumaValores = 0;
+    private int puntosALevantar = 0;
 
     public PilaPalo(Palo palo) {
         this.palo = palo;
@@ -35,6 +36,14 @@ public class PilaPalo {
         return cartasEnMesa;
     }
 
+    public int getPuntosALevantar() {
+        return puntosALevantar;
+    }
+
+    public void setPuntosALevantar(int puntosALevantar) {
+        this.puntosALevantar = puntosALevantar;
+    }
+
     public void agregarCarta(Carta carta) {
 
         carta.setEnMesa(true);
@@ -50,6 +59,7 @@ public class PilaPalo {
         }
         this.cartasEnMesa.clear();
         this.setSumaValores(0);
+        this.setPuntosALevantar(0);
     }
 
 }

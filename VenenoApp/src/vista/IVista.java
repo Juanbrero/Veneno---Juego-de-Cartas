@@ -1,5 +1,9 @@
 package vista;
 
+import modelo.baraja.Carta;
+
+import java.util.ArrayList;
+
 public interface IVista {
     
     void iniciar();
@@ -8,7 +12,7 @@ public interface IVista {
 
     void iniciarPartida();
 
-    void generarCarta(String string, int nro, int i);
+    void generarCartas(ArrayList<Carta> cartas);
 
     void reiniciarMano();
 
@@ -23,4 +27,6 @@ public interface IVista {
     void reiniciarPila(String pilaAReiniciar);
 
     void levantarCartas(int puntos);
+
+    void finJuego(ArrayList<String> resultados);
 }
