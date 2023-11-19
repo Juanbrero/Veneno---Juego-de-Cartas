@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Juego extends ObservableRemoto implements IJuego {
 
-    static Juego instancia;
+    private static Juego instancia;
     private PilaPalo pilaOro;
     private PilaPalo pilaEspada;
     private PilaPalo pilaBasto;
@@ -69,7 +69,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return jugadoresConectados;
     }
 
-    public void setCantidadRondas() throws RemoteException {
+    private void setCantidadRondas() throws RemoteException {
         this.cantidadRondas = mazo.getCantidadCartasEnMazo() / this.cantidadJugadores;
     }
 

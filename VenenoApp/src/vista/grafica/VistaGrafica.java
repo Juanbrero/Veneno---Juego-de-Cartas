@@ -74,6 +74,7 @@ public class VistaGrafica {
         return pantallaJuego;
     }
 
+
     /**
      * Informa al controlador de la carta a tirar. Verifica si la carta es de copa, en dicho caso pide seleccionar
      * la pila de cartas a envenenar.
@@ -91,14 +92,6 @@ public class VistaGrafica {
             veneno.add(mensaje);
             veneno.add(opciones);
 
-            JButton oro = new JButton("Oro");
-            opciones.add(oro);
-            oro.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    pantallaMenu.getControlador().tirarCarta(indice,"ORO");
-                }
-            });
 
             JButton basto = new JButton("Basto");
             opciones.add(basto);
@@ -106,6 +99,15 @@ public class VistaGrafica {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     pantallaMenu.getControlador().tirarCarta(indice, "BASTO");
+                }
+            });
+
+            JButton oro = new JButton("Oro");
+            opciones.add(oro);
+            oro.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pantallaMenu.getControlador().tirarCarta(indice,"ORO");
                 }
             });
 

@@ -30,7 +30,7 @@ public class Carta implements Serializable {
         return palo;
     }
 
-    public void setPalo(Palo palo) {
+    private void setPalo(Palo palo) {
         this.palo = palo;
     }
 
@@ -38,7 +38,7 @@ public class Carta implements Serializable {
         return nro;
     }
 
-    public void setNro(int nro) {
+    private void setNro(int nro) {
         this.nro = nro;
     }
 
@@ -70,7 +70,7 @@ public class Carta implements Serializable {
         return valor;
     }
 
-    public void setValor(double valor) {
+    private void setValor(double valor) {
         this.valor = valor;
     }
 

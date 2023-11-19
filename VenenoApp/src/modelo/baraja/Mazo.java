@@ -1,6 +1,5 @@
 package modelo.baraja;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -29,7 +28,7 @@ public class Mazo {
         return cantidadCartasEnMazo;
     }
 
-    public void setCantidadCartasEnMazo(int cantidadCartasEnMazo) {
+    private void setCantidadCartasEnMazo(int cantidadCartasEnMazo) {
         this.cantidadCartasEnMazo = cantidadCartasEnMazo;
     }
 
@@ -39,23 +38,17 @@ public class Mazo {
 
     public ArrayList<Carta> repartir() {
 
-//        mezclar();
         int indice = 0;
         ArrayList<Carta> cartas = new ArrayList<>();
         while (indice < MAX_CARTAS && cantidadCartasEnMazo > 0 && cartas.size() < 4) {
 
-//            if(cartas.size() == 4) {
-//                break;
-//            }
-//            else {
+            if (cartasEnMazo.get(indice).isEnMazo()) {
 
-                if (cartasEnMazo.get(indice).isEnMazo()) {
+                cartas.add(cartasEnMazo.get(indice));
+                cartasEnMazo.get(indice).setEnMazo(false);
+                this.cantidadCartasEnMazo--;
+            }
 
-                    cartas.add(cartasEnMazo.get(indice));
-                    cartasEnMazo.get(indice).setEnMazo(false);
-                    this.cantidadCartasEnMazo--;
-                }
-//            }
             indice++;
         }
         return cartas;

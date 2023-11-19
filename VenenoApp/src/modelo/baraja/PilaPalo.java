@@ -25,7 +25,7 @@ public class PilaPalo implements Serializable {
         return sumaValores;
     }
 
-    public void setSumaValores(double sumaValores) {
+    private void setSumaValores(double sumaValores) {
         this.sumaValores = sumaValores;
     }
 
