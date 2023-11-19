@@ -4,6 +4,7 @@ import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import eventos.Evento;
 import modelo.baraja.Carta;
+import modelo.baraja.PilaPalo;
 import modelo.juego.IJuego;
 import modelo.jugador.Jugador;
 import vista.IVista;
@@ -63,12 +64,12 @@ public class Controlador implements IControladorRemoto {
                     updateTurno();
                     break;
                 case CARTA_JUGADA:
-                    if(juego.isReiniciarPila()) {
-                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaAReiniciar(), juego.getJugadores().get(this.id).getPuntos());
-                    }
-                    else {
-                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila() , "", 0);
-                    }
+//                    if(juego.isReiniciarPila()) {
+                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaActualizada());
+//                    }
+//                    else {
+//                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila() , juego.getPilaActualizada(), juego.getJugadores().get(this.id).getPuntos());
+//                    }
                     break;
                 case FIN_JUEGO:
                     updateFinJuego(this.juego.getResultadosFinales());
@@ -218,12 +219,12 @@ public class Controlador implements IControladorRemoto {
      * @param cartaJugada
      * @param carta
      * @param reiniciarPila
-     * @param pilaAReiniciar
-     * @param puntos
+     * @param pilaActualizada
      */
-    private void updateCartaJugada(int cartaJugada, Carta carta, boolean reiniciarPila, String pilaAReiniciar, int puntos) {
+    private void updateCartaJugada(int cartaJugada, Carta carta, boolean reiniciarPila, PilaPalo pilaActualizada) {
 
         try {
+            System.out.println("controlador > pila a actualizar: " + pilaActualizada.getPalo().toString());
             if (miTurno) {
 
                 /* Actualizo la informacion del jugador luego de jugar el turno. */
@@ -232,16 +233,16 @@ public class Controlador implements IControladorRemoto {
                 vista.tirarCarta(cartaJugada);
                 /* Si al tirar la carta me toca levantar la pila de la mesa */
                 if (reiniciarPila) {
-                    System.out.println("controlador > updateCartaJugada: " + puntos + " puntos ");
-                    this.vista.levantarCartas(puntos);
+                    System.out.println("controlador > updateCartaJugada: " + this.jugador.getPuntosALevantar() + " puntos ");
+                    this.vista.levantarCartas(this.jugador.getPuntosALevantar());
                 }
             }
             if (!reiniciarPila) {
 
-                vista.agregarCartaEnMesa(carta.getPalo().toString(),carta.getValor());
+                vista.agregarCartaEnMesa(pilaActualizada.getPalo().toString(),carta.getValor());
             }
             else {
-                vista.reiniciarPila(pilaAReiniciar);
+                vista.reiniciarPila(pilaActualizada.getPalo().toString());
             }
         }
         catch (RemoteException e) {

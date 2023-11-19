@@ -27,7 +27,7 @@ public interface IJuego extends IObservableRemoto {
 
     boolean isReiniciarPila() throws RemoteException;
 
-    String getPilaAReiniciar() throws RemoteException;
+    PilaPalo getPilaActualizada() throws RemoteException;
 
     List<Jugador> getResultadosFinales() throws RemoteException;
 

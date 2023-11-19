@@ -29,7 +29,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int manosJugadas = 0;
     private Carta cartaJugadaTurnoActual;
     private int indiceCartaJugadaTurnoActual;
-    private String pilaAReiniciar;
+    private PilaPalo pilaActualizada;
     private boolean reiniciarPila;
     private List<Jugador> resultadosFinales = new ArrayList<>();
 
@@ -85,8 +85,8 @@ public class Juego extends ObservableRemoto implements IJuego {
         return reiniciarPila;
     }
 
-    public String getPilaAReiniciar() throws RemoteException {
-        return pilaAReiniciar;
+    public PilaPalo getPilaActualizada() throws RemoteException {
+        return pilaActualizada;
     }
 
     public List<Jugador> getResultadosFinales() throws RemoteException {
@@ -188,37 +188,38 @@ public class Juego extends ObservableRemoto implements IJuego {
         if (palo.equals(Palo.BASTO.toString())) {
             pilaBasto.agregarCarta(cartaJugadaTurnoActual); //agrego primero la carta a la pila de la mesa
             jugadores.get(jugadorActual).tirarCarta(carta); //tiro la carta de la mano del jugador
+            pilaActualizada = pilaBasto;
 
             if(verificarSumaPila(pilaBasto,jugadorActual)) {
-                pilaAReiniciar = pilaBasto.getPalo().toString();
                 reiniciarPila = true;
+                pilaBasto.reinicarPila();
             }
         }
         else if (palo.equals(Palo.ORO.toString())) {
             pilaOro.agregarCarta(cartaJugadaTurnoActual);
             jugadores.get(jugadorActual).tirarCarta(carta);
+            pilaActualizada = pilaOro;
 
             if(verificarSumaPila(pilaOro,jugadorActual)) {
-                pilaAReiniciar = pilaOro.getPalo().toString();
                 reiniciarPila = true;
+                pilaOro.reinicarPila();
             }
         }
         else if (palo.equals(Palo.ESPADA.toString())) {
             pilaEspada.agregarCarta(cartaJugadaTurnoActual);
             jugadores.get(jugadorActual).tirarCarta(carta);
+            pilaActualizada = pilaEspada;
 
             if(verificarSumaPila(pilaEspada,jugadorActual)) {
-                pilaAReiniciar = pilaEspada.getPalo().toString();
                 reiniciarPila = true;
+                pilaEspada.reinicarPila();
             }
         }
 
-        /* Modifico el palo de la carta jugada segun la pila en la que se agrega
-           (en caso de que la carta sea copa simularia un casteo del palo) */
-        cartaJugadaTurnoActual.setPalo(Palo.valueOf(palo));
-
+        System.out.println("juego > pila actualizada: " + pilaActualizada.getPalo().toString());
         this.manosJugadas++;
         notificarObservadores(Evento.CARTA_JUGADA);
+        jugadores.get(jugadorActual).setPuntosALevantar(0); //Reiniciar los puntos a levantar del jugador.
         pasarTurno();
     }
 
@@ -240,19 +241,17 @@ public class Juego extends ObservableRemoto implements IJuego {
             /*Si supera el limite de valor acumulado, calculo cuantos puntos se le sumarian al jugador
             (cada carta de copa que levante se le suma un punto) */
 
-//            int puntos = 0;
+            int puntos = 0;
             System.out.println("juego > cartas en la pila " + pila.getPalo().toString() + pila.getCartasEnMesa());
             for (Carta c : pila.getCartasEnMesa()) {
                 System.out.println(c.getPalo().toString());
                 if(c.isCopa()) {
-//                    puntos ++;
-                    pila.setPuntosALevantar(pila.getPuntosALevantar() + 1);
+                    puntos ++;
                     System.out.println("juego > carta de copa + 1 punto");
                 }
             }
-            System.out.println("juego > verificar suma: " + pila.getPuntosALevantar() + " puntos");
-            jugadores.get(jugadorActual).sumarPuntos(pila.getPuntosALevantar());
-            pila.reinicarPila();
+            System.out.println("juego > verificar suma: " + puntos + " puntos");
+            jugadores.get(jugadorActual).sumarPuntos(puntos);
             levantarCartas = true;
         }
 

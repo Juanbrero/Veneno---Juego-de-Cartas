@@ -1,8 +1,9 @@
-package vista.grafica;
+package vista;
 
 import controlador.Controlador;
 import modelo.baraja.Carta;
-import vista.IVista;
+import vista.consola.VistaConsola;
+import vista.grafica.VistaGrafica;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,14 +11,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class VentanaGrafica implements IVista {
+public class VistaGeneral implements IVista {
 
     private Controlador controlador;
     private JFrame pantallaMenu;
-    private VentanaJuego pantallaJuego;
+    private VistaGrafica pantallaJuego;
+    private VistaConsola consolaJuego;
+    private boolean modoGrafico;
     private JPanel panelPrincipal;
     private JPanel panelMenu;
     private JPanel menuOpciones;
@@ -31,7 +33,7 @@ public class VentanaGrafica implements IVista {
     JDialog colaEspera;
 
 
-    public VentanaGrafica(Controlador controlador) {
+    public VistaGeneral(Controlador controlador) {
         this.setControlador(controlador);
         this.controlador.setVista(this);
 
@@ -46,6 +48,8 @@ public class VentanaGrafica implements IVista {
         datosUsuario();
 
         menuCantidadJugadores();
+
+        tipoVista();
 
         botonStart();
 
@@ -107,7 +111,14 @@ public class VentanaGrafica implements IVista {
         pantallaMenu.setVisible(false);
         System.out.println("vista > arrancamossss");
 
-        pantallaJuego = new VentanaJuego(nombre, this);
+        if(modoGrafico) {
+
+            pantallaJuego = new VistaGrafica(nombre, this);
+        }
+        else {
+            //inicia modo consola
+            consolaJuego = new VistaConsola(nombre, this);
+        }
 
     }
 
@@ -118,7 +129,13 @@ public class VentanaGrafica implements IVista {
      */
     public void generarCartas(ArrayList<Carta> cartas) {
 
-        this.pantallaJuego.generarCartas(cartas);
+        if (modoGrafico) {
+
+            this.pantallaJuego.generarCartas(cartas);
+        }
+        else {
+            this.consolaJuego.generarCartas(cartas);
+        }
     }
 
     /**
@@ -126,8 +143,13 @@ public class VentanaGrafica implements IVista {
      */
     public void reiniciarMano() {
 
-        pantallaJuego.reiniciarMano();
+        if(modoGrafico) {
 
+            pantallaJuego.reiniciarMano();
+        }
+        else {
+            consolaJuego.reiniciarMano();
+        }
     }
 
 
@@ -138,24 +160,47 @@ public class VentanaGrafica implements IVista {
 
 
     public void tirarCarta(int cartaJugada) {
-        pantallaJuego.tirarCarta(cartaJugada);
+        if(modoGrafico) {
 
+            pantallaJuego.tirarCarta(cartaJugada);
+        }
+        else {
+            consolaJuego.tirarCarta(cartaJugada);
+        }
     }
 
 
     public void agregarCartaEnMesa(String palo, double valor) {
-        pantallaJuego.agregarCartaEnMesa(palo, valor);
+        if(modoGrafico) {
+
+            pantallaJuego.agregarCartaEnMesa(palo, valor);
+        }
+        else {
+            consolaJuego.agregarCartaEnMesa(palo, valor);
+        }
     }
 
 
     public void reiniciarPila(String pilaAReiniciar) {
-        pantallaJuego.reiniciarPila(pilaAReiniciar);
+        if(modoGrafico) {
+
+            pantallaJuego.reiniciarPila(pilaAReiniciar);
+        }
+        else {
+            consolaJuego.reiniciarPila(pilaAReiniciar);
+        }
     }
 
 
     public void levantarCartas(int puntos) {
         System.out.println("vista > puntos: " + puntos);
-        pantallaJuego.levantarCartas(puntos);
+        if (modoGrafico) {
+
+            pantallaJuego.levantarCartas(puntos);
+        }
+        else {
+            consolaJuego.levantarCartas(puntos);
+        }
     }
 
 
@@ -174,7 +219,17 @@ public class VentanaGrafica implements IVista {
             panelFin.add(jugador);
         }
 
-        JDialog panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
+        JDialog panelDialogo;
+        if(modoGrafico) {
+
+            panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
+            panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
+        }
+        else {
+            panelDialogo = new JDialog(consolaJuego.getConsolaJuego());
+            panelDialogo.setLocationRelativeTo(consolaJuego.getConsolaJuego());
+        }
+
         panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JButton ok = new JButton("OK");
@@ -186,7 +241,6 @@ public class VentanaGrafica implements IVista {
         panelDialogo.add(elementos);
 
         panelDialogo.setSize(250, 250);
-        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
 
         ok.addActionListener(new ActionListener() {
             @Override
@@ -265,15 +319,17 @@ public class VentanaGrafica implements IVista {
         panelMenu = new JPanel(new FlowLayout());
 
         //Panel de opciones
-        menuOpciones = new JPanel(new GridLayout(4,1));
+        menuOpciones = new JPanel(new GridLayout(5,1));
 
         //Agrego el panel de opciones al panel del menu y luego agrego el panel de menu al panel principal.
         panelMenu.add(menuOpciones);
         panelPrincipal.add(panelMenu);
 
         //Titulo
+        JPanel titulo = new JPanel(new FlowLayout());
         JLabel cartelMenuPrincipal = new JLabel("Menu Principal");
-        menuOpciones.add(cartelMenuPrincipal); // agrego el titulo del menu
+        titulo.add(cartelMenuPrincipal);
+        menuOpciones.add(titulo); // agrego el titulo del menu
     }
 
     /**
@@ -326,9 +382,6 @@ public class VentanaGrafica implements IVista {
             }
         });
 
-        //Por defecto se selecciona la primer opcion.
-        op1.setSelected(true);
-
         // Agrupo los botones para que solo se pueda seleccionar uno a la vez.
         ButtonGroup opCantidadJugadores = new ButtonGroup();
         opCantidadJugadores.add(op1);
@@ -339,6 +392,43 @@ public class VentanaGrafica implements IVista {
         selectJugadores.add(op1);
         selectJugadores.add(op2);
         selectJugadores.add(op3);
+    }
+
+    /**
+     * Crea las opciones para elegir entre modo consola y modo grafico.
+     */
+    private void tipoVista() {
+
+        JPanel menuVistas = new JPanel(new GridLayout(1,3));
+
+        menuOpciones.add(menuVistas);
+
+        menuVistas.add(new JLabel("Modo de juego"));
+
+        //Creo los botones de opciones
+        JRadioButton grafica = new JRadioButton("Grafico");
+        grafica.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                modoGrafico = true;
+            }
+        });
+        JRadioButton consola = new JRadioButton("Consola");
+        consola.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                modoGrafico = false;
+            }
+        });
+
+        // Agrupo los botones para que solo se pueda seleccionar uno a la vez.
+        ButtonGroup opTipoVista = new ButtonGroup();
+        opTipoVista.add(grafica);
+        opTipoVista.add(consola);
+
+        menuVistas.add(grafica);
+        menuVistas.add(consola);
+
     }
 
     /**

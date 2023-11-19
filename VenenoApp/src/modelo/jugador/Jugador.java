@@ -9,7 +9,9 @@ public class Jugador implements Serializable {
 
     private String nombre;
     private int id;
-    private int puntos = 0;
+    private int puntosTotales = 0;
+    private int puntosALevantar = 0;
+
     private boolean miTurno = false;
     private ArrayList<Carta> cartasEnMano = new ArrayList<>();
 
@@ -31,12 +33,16 @@ public class Jugador implements Serializable {
     }
 
     public int getPuntos() {
-        return puntos;
+        return puntosTotales;
     }
 
-//    public void setPuntos(int puntos) {
-//        this.puntos += puntos;
-//    }
+    public int getPuntosALevantar() {
+        return puntosALevantar;
+    }
+
+    public void setPuntosALevantar(int puntosALevantar) {
+        this.puntosALevantar = puntosALevantar;
+    }
 
     public boolean isMiTurno() {
         return miTurno;
@@ -64,7 +70,8 @@ public class Jugador implements Serializable {
 
     public void sumarPuntos(int puntos) {
 
-        this.puntos += puntos;
+        this.puntosTotales += puntos;
+        this.puntosALevantar = puntos;
 
     }
 

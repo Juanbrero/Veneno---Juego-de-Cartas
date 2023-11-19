@@ -1,6 +1,7 @@
 package vista.grafica;
 
 import modelo.baraja.Carta;
+import vista.VistaGeneral;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -11,9 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class VentanaJuego {
+public class VistaGrafica {
 
-    private VentanaGrafica pantallaMenu;
+    private VistaGeneral pantallaMenu;
     private JFrame pantallaJuego;
     private String nombre;
     private JPanel panelPrincipal;
@@ -49,7 +50,7 @@ public class VentanaJuego {
     private JLabel jugador4;
 
 
-    public VentanaJuego(String nombreJugador, VentanaGrafica pantallaMenu) {
+    public VistaGrafica(String nombreJugador, VistaGeneral pantallaMenu) {
         this.pantallaMenu = pantallaMenu;
         this.nombre = nombreJugador;
 
@@ -144,6 +145,7 @@ public class VentanaJuego {
      */
     public void agregarCartaEnMesa(String palo, double valor) {
 
+        System.out.println("vista > pila a actualizar: " + palo);
         switch (palo) {
             case "ORO" -> {
                 sumaValorPilaOro += valor;
@@ -166,6 +168,8 @@ public class VentanaJuego {
      * @param pilaAReiniciar
      */
     public void reiniciarPila(String pilaAReiniciar) {
+
+        System.out.println("vista > pila a reiniciar: " + pilaAReiniciar);
         if(pilaAReiniciar.equals("ORO")) {
             sumaValorPilaOro = 0;
             sumOro.setText("Acumulado: 0");
