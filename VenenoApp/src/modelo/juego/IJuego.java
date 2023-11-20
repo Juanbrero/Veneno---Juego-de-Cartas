@@ -19,8 +19,6 @@ public interface IJuego extends IObservableRemoto {
 
     int getJugadoresConectados() throws RemoteException;
 
-//    void setCantidadRondas() throws RemoteException;
-
     Carta getCartaJugadaTurnoActual() throws RemoteException;
 
     int getIndiceCartaJugadaTurnoActual() throws RemoteException;

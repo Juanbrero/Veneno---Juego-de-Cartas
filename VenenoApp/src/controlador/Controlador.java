@@ -26,15 +26,6 @@ public class Controlador implements IControladorRemoto {
 
     }
 
-    public <T extends IObservableRemoto> Controlador(T modelo) {
-        try {
-            this.setModeloRemoto(modelo);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public void setVista(IVista vista) {
         this.vista = vista;
     }
@@ -64,12 +55,7 @@ public class Controlador implements IControladorRemoto {
                     updateTurno();
                     break;
                 case CARTA_JUGADA:
-//                    if(juego.isReiniciarPila()) {
-                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaActualizada());
-//                    }
-//                    else {
-//                        updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila() , juego.getPilaActualizada(), juego.getJugadores().get(this.id).getPuntos());
-//                    }
+                    updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaActualizada());
                     break;
                 case FIN_JUEGO:
                     updateFinJuego(this.juego.getResultadosFinales());
@@ -166,7 +152,6 @@ public class Controlador implements IControladorRemoto {
      */
     private void updateInicioRonda() {
 
-        int i = 0;
         try {
 
             if (!this.jugador.getCartasEnMano().isEmpty()){
@@ -237,6 +222,7 @@ public class Controlador implements IControladorRemoto {
                     this.vista.levantarCartas(this.jugador.getPuntosALevantar());
                 }
             }
+            /* Actualizacion para todos los jugadores sobre la pila a actualizar.*/
             if (!reiniciarPila) {
 
                 vista.agregarCartaEnMesa(pilaActualizada.getPalo().toString(),carta.getValor());

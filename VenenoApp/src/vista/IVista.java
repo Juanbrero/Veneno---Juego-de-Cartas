@@ -29,4 +29,5 @@ public interface IVista {
     void levantarCartas(int puntos);
 
     void finJuego(ArrayList<String> resultados);
+
 }

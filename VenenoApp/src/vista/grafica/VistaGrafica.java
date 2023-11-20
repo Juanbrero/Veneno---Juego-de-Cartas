@@ -1,7 +1,6 @@
 package vista.grafica;
 
 import modelo.baraja.Carta;
-import vista.VistaGeneral;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 public class VistaGrafica {
 
-    private VistaGeneral pantallaMenu;
+    private VistaInicio pantallaMenu;
     private JFrame pantallaJuego;
     private String nombre;
     private JPanel panelPrincipal;
@@ -50,7 +49,7 @@ public class VistaGrafica {
     private JLabel jugador4;
 
 
-    public VistaGrafica(String nombreJugador, VistaGeneral pantallaMenu) {
+    public VistaGrafica(String nombreJugador, VistaInicio pantallaMenu) {
         this.pantallaMenu = pantallaMenu;
         this.nombre = nombreJugador;
 
@@ -355,6 +354,5 @@ public class VistaGrafica {
         cartasEnMano.removeAll();
 
     }
-
 
 }

@@ -1,9 +1,8 @@
-package vista;
+package vista.grafica;
 
 import controlador.Controlador;
 import modelo.baraja.Carta;
-import vista.consola.VistaConsola;
-import vista.grafica.VistaGrafica;
+import vista.IVista;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,13 +12,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class VistaGeneral implements IVista {
+public class VistaInicio implements IVista {
 
     private Controlador controlador;
     private JFrame pantallaMenu;
     private VistaGrafica pantallaJuego;
-    private VistaConsola consolaJuego;
-    private boolean modoGrafico;
     private JPanel panelPrincipal;
     private JPanel panelMenu;
     private JPanel menuOpciones;
@@ -33,7 +30,7 @@ public class VistaGeneral implements IVista {
     JDialog colaEspera;
 
 
-    public VistaGeneral(Controlador controlador) {
+    public VistaInicio(Controlador controlador) {
         this.setControlador(controlador);
         this.controlador.setVista(this);
 
@@ -48,8 +45,6 @@ public class VistaGeneral implements IVista {
         datosUsuario();
 
         menuCantidadJugadores();
-
-        tipoVista();
 
         botonStart();
 
@@ -111,14 +106,7 @@ public class VistaGeneral implements IVista {
         pantallaMenu.setVisible(false);
         System.out.println("vista > arrancamossss");
 
-        if(modoGrafico) {
-
-            pantallaJuego = new VistaGrafica(nombre, this);
-        }
-        else {
-            //inicia modo consola
-            consolaJuego = new VistaConsola(nombre, this);
-        }
+        pantallaJuego = new VistaGrafica(nombre, this);
 
     }
 
@@ -129,27 +117,14 @@ public class VistaGeneral implements IVista {
      */
     public void generarCartas(ArrayList<Carta> cartas) {
 
-        if (modoGrafico) {
-
-            this.pantallaJuego.generarCartas(cartas);
-        }
-        else {
-            this.consolaJuego.generarCartas(cartas);
-        }
+        this.pantallaJuego.generarCartas(cartas);
     }
 
     /**
      * Reinicia las cartas de la mano al comenzar una nueva ronda.
      */
     public void reiniciarMano() {
-
-        if(modoGrafico) {
-
-            pantallaJuego.reiniciarMano();
-        }
-        else {
-            consolaJuego.reiniciarMano();
-        }
+        pantallaJuego.reiniciarMano();
     }
 
 
@@ -160,47 +135,24 @@ public class VistaGeneral implements IVista {
 
 
     public void tirarCarta(int cartaJugada) {
-        if(modoGrafico) {
-
-            pantallaJuego.tirarCarta(cartaJugada);
-        }
-        else {
-            consolaJuego.tirarCarta(cartaJugada);
-        }
+        pantallaJuego.tirarCarta(cartaJugada);
     }
 
 
     public void agregarCartaEnMesa(String palo, double valor) {
-        if(modoGrafico) {
-
-            pantallaJuego.agregarCartaEnMesa(palo, valor);
-        }
-        else {
-            consolaJuego.agregarCartaEnMesa(palo, valor);
-        }
+        pantallaJuego.agregarCartaEnMesa(palo, valor);
     }
 
 
     public void reiniciarPila(String pilaAReiniciar) {
-        if(modoGrafico) {
 
-            pantallaJuego.reiniciarPila(pilaAReiniciar);
-        }
-        else {
-            consolaJuego.reiniciarPila(pilaAReiniciar);
-        }
+        pantallaJuego.reiniciarPila(pilaAReiniciar);
     }
 
 
     public void levantarCartas(int puntos) {
         System.out.println("vista > puntos: " + puntos);
-        if (modoGrafico) {
-
-            pantallaJuego.levantarCartas(puntos);
-        }
-        else {
-            consolaJuego.levantarCartas(puntos);
-        }
+        pantallaJuego.levantarCartas(puntos);
     }
 
 
@@ -219,17 +171,8 @@ public class VistaGeneral implements IVista {
             panelFin.add(jugador);
         }
 
-        JDialog panelDialogo;
-        if(modoGrafico) {
-
-            panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
-            panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
-        }
-        else {
-            panelDialogo = new JDialog(consolaJuego.getConsolaJuego());
-            panelDialogo.setLocationRelativeTo(consolaJuego.getConsolaJuego());
-        }
-
+        JDialog panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
+        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
         panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JButton ok = new JButton("OK");
@@ -299,12 +242,8 @@ public class VistaGeneral implements IVista {
     }
 
 
-
-
-
-
-
     /* ------------- Funciones para crear componentes de la ventana ------------ */
+
 
     /**
      * Crea los paneles principales de la ventana.
@@ -332,6 +271,7 @@ public class VistaGeneral implements IVista {
         menuOpciones.add(titulo); // agrego el titulo del menu
     }
 
+
     /**
      * Crea los paneles donde van los datos del jugador.
      */
@@ -346,6 +286,7 @@ public class VistaGeneral implements IVista {
         datos.add(nombreUsuario);
         menuOpciones.add(datos);
     }
+
 
     /**
      * Crea los paneles del menu de botones para seleccionar la cantidad de jugadores.
@@ -394,42 +335,44 @@ public class VistaGeneral implements IVista {
         selectJugadores.add(op3);
     }
 
+
     /**
      * Crea las opciones para elegir entre modo consola y modo grafico.
+     * (IMPLEMENTAR DIRECTAMENTE EN AppCliente).
      */
-    private void tipoVista() {
-
-        JPanel menuVistas = new JPanel(new GridLayout(1,3));
-
-        menuOpciones.add(menuVistas);
-
-        menuVistas.add(new JLabel("Modo de juego"));
-
-        //Creo los botones de opciones
-        JRadioButton grafica = new JRadioButton("Grafico");
-        grafica.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                modoGrafico = true;
-            }
-        });
-        JRadioButton consola = new JRadioButton("Consola");
-        consola.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                modoGrafico = false;
-            }
-        });
-
-        // Agrupo los botones para que solo se pueda seleccionar uno a la vez.
-        ButtonGroup opTipoVista = new ButtonGroup();
-        opTipoVista.add(grafica);
-        opTipoVista.add(consola);
-
-        menuVistas.add(grafica);
-        menuVistas.add(consola);
-
-    }
+//    private void tipoVista() {
+//
+//        JPanel menuVistas = new JPanel(new GridLayout(1,3));
+//
+//        menuVistas.add(new JLabel("Modo de juego"));
+//
+//        //Creo los botones de opciones
+//        JRadioButton grafica = new JRadioButton("Grafico");
+//        grafica.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                IVista iVista = new VistaInicio(controlador);
+//            }
+//        });
+//        JRadioButton consola = new JRadioButton("Consola");
+//        consola.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                IVista iVista = new VistaConsola(controlador);
+//            }
+//        });
+//
+//        // Agrupo los botones para que solo se pueda seleccionar uno a la vez.
+//        ButtonGroup opTipoVista = new ButtonGroup();
+//        opTipoVista.add(grafica);
+//        opTipoVista.add(consola);
+//
+//        menuVistas.add(grafica);
+//        menuVistas.add(consola);
+//
+//        JOptionPane.showMessageDialog(null, menuVistas);
+//
+//    }
 
     /**
      * Crea el boton de inicio y define su actionListener.
@@ -459,11 +402,5 @@ public class VistaGeneral implements IVista {
             }
         });
     }
-
-
-
-
-
-
 
 }

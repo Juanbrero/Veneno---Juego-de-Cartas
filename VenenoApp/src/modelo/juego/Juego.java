@@ -62,7 +62,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void setCantidadJugadores(int cantidadJugadores) throws RemoteException {
         this.cantidadJugadores = cantidadJugadores;
-//        this.setCantidadRondas();
+        this.setCantidadRondas();
     }
 
     public int getJugadoresConectados() throws RemoteException {
@@ -310,8 +310,5 @@ public class Juego extends ObservableRemoto implements IJuego {
     public Jugador obtenerJugadorActual() throws RemoteException {
         return jugadores.get(jugadorActual);
     }
-
-
-
 
 }
