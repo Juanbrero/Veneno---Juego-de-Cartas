@@ -11,7 +11,6 @@ public class Jugador implements Serializable {
     private int id;
     private int puntosTotales = 0;
     private int puntosALevantar = 0;
-
     private boolean miTurno = false;
     private ArrayList<Carta> cartasEnMano = new ArrayList<>();
 
