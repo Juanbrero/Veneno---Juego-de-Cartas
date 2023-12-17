@@ -240,16 +240,13 @@ public class Controlador implements IControladorRemoto {
     private void updateFinJuego(List<Jugador> resultadosFinales) {
 
         ArrayList<String> resultados = new ArrayList<>();
-
+        int posicion = 1;
         for (Jugador j : resultadosFinales) {
-            resultados.add("- " + j.getNombre() + "<" + j.getPuntos() + ">");
-
+            resultados.add("#" + posicion + " - " + j.getNombre() + " <" + j.getPuntos() + "> pts.");
+            posicion++;
         }
 
         vista.finJuego(resultados);
     }
-
-
-
 
 }

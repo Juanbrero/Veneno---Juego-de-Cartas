@@ -337,44 +337,6 @@ public class VistaInicio implements IVista {
 
 
     /**
-     * Crea las opciones para elegir entre modo consola y modo grafico.
-     * (IMPLEMENTAR DIRECTAMENTE EN AppCliente).
-     */
-//    private void tipoVista() {
-//
-//        JPanel menuVistas = new JPanel(new GridLayout(1,3));
-//
-//        menuVistas.add(new JLabel("Modo de juego"));
-//
-//        //Creo los botones de opciones
-//        JRadioButton grafica = new JRadioButton("Grafico");
-//        grafica.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                IVista iVista = new VistaInicio(controlador);
-//            }
-//        });
-//        JRadioButton consola = new JRadioButton("Consola");
-//        consola.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                IVista iVista = new VistaConsola(controlador);
-//            }
-//        });
-//
-//        // Agrupo los botones para que solo se pueda seleccionar uno a la vez.
-//        ButtonGroup opTipoVista = new ButtonGroup();
-//        opTipoVista.add(grafica);
-//        opTipoVista.add(consola);
-//
-//        menuVistas.add(grafica);
-//        menuVistas.add(consola);
-//
-//        JOptionPane.showMessageDialog(null, menuVistas);
-//
-//    }
-
-    /**
      * Crea el boton de inicio y define su actionListener.
      */
     private void botonStart() {

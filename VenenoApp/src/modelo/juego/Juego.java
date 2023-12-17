@@ -24,7 +24,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int cantidadJugadores;
     private int jugadoresConectados = 0;
     private int jugadorActual = 0;
-    private int cantidadRondas = 2;
+    private int cantidadRondas = 1;
     private int rondaActual = 0;
     private int manosJugadas = 0;
     private Carta cartaJugadaTurnoActual;
@@ -62,7 +62,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void setCantidadJugadores(int cantidadJugadores) throws RemoteException {
         this.cantidadJugadores = cantidadJugadores;
-        this.setCantidadRondas();
+//        this.setCantidadRondas();
     }
 
     public int getJugadoresConectados() throws RemoteException {
@@ -299,6 +299,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         //Genero una lista ordenada de los jugadores segun los puntos obtenidos
         resultadosFinales = jugadores.stream().sorted(Comparator.comparingInt(Jugador::getPuntos)).toList();
         notificarObservadores(Evento.FIN_JUEGO);
+
     }
 
 

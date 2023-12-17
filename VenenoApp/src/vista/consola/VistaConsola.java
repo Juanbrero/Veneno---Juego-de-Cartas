@@ -7,10 +7,12 @@ import vista.IVista;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 
-public class VistaConsola implements IVista {
+public class VistaConsola extends JFrame implements IVista {
 
     private Controlador controlador;
     private JFrame consola;
@@ -22,56 +24,94 @@ public class VistaConsola implements IVista {
     private JPanel panelGral;
     private JPanel panelTexto;
     private JPanel panelComandos;
-
+    private JTextArea chatArea;
+    private JTextField inputField;
 
 
     public VistaConsola(Controlador controlador) {
 
         this.controlador = controlador;
 
-        consola = new JFrame("Veneno - Juego de cartas");
-        consola.setSize(750, 580);
-        consola.setLocationRelativeTo(null);
-        consola.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//        consola = new JFrame("Veneno - Juego de cartas");
+//        consola.setSize(750, 580);
+//        consola.setLocationRelativeTo(null);
+//        consola.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//
+//        panelGral = (JPanel) consola.getContentPane();
+//        panelGral.setLayout(new BorderLayout());
+//
+//        /* panel de texto de la consola.*/
+//        panelTexto = new JPanel(new FlowLayout());
+//        panelTexto.setPreferredSize(new Dimension(750,500));
+//        JTextField campoTexto = new JTextField();
+//        campoTexto.setPreferredSize(new Dimension(750,500));
+//        panelTexto.add(campoTexto);
+//
+//        panelGral.add(panelTexto, BorderLayout.CENTER);
+//
+//        /* panel de comandos */
+//        panelComandos = new JPanel(new GridLayout(1,2));
+//        panelComandos.setBorder(new LineBorder(Color.DARK_GRAY));
+//        panelComandos.setPreferredSize(new Dimension(750,80));
+//        JPanel ingresoComando = new JPanel(new FlowLayout());
+//        ingresoComando.setPreferredSize(new Dimension(700,80));
+//        JTextArea lineaComando = new JTextArea();
+//        ingresoComando.add(lineaComando,FlowLayout.LEFT);
+//        panelComandos.add(ingresoComando);
+//
+//        /* Boton para enviar el comando */
+//        JPanel enviarComando = new JPanel(new FlowLayout());
+//        enviarComando.setPreferredSize(new Dimension(50,80));
+//        JButton enviar = new JButton("Listo");
+//        enviarComando.add(enviar);
+//        panelComandos.add(enviarComando);
+//
+//        panelGral.add(panelComandos, BorderLayout.SOUTH);
 
-        panelGral = (JPanel) consola.getContentPane();
-        panelGral.setLayout(new GridLayout(2,1));
+        setTitle("Chat Console");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        /* panel de texto de la consola.*/
-        panelTexto = new JPanel(new FlowLayout());
-        panelTexto.setPreferredSize(new Dimension(750,500));
-        JTextArea campoTexto = new JTextArea();
-        panelTexto.add(campoTexto,FlowLayout.CENTER);
+        chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(chatArea);
 
-        panelGral.add(panelTexto);
+        inputField = new JTextField();
+        JButton enviarButton = new JButton("Enviar");
+        enviarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enviarMensaje();
+            }
+        });
 
-        /* panel de comandos */
-        panelComandos = new JPanel(new GridLayout(1,2));
-        JPanel ingresoComando = new JPanel(new FlowLayout());
-        ingresoComando.setPreferredSize(new Dimension(700,80));
-        JTextField lineaComando = new JTextField();
-        lineaComando.setBorder(new LineBorder(Color.DARK_GRAY));
-        ingresoComando.add(lineaComando,FlowLayout.LEFT);
-        panelComandos.add(ingresoComando);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
 
-        /* Boton para enviar el comando */
-        JPanel enviarComando = new JPanel(new FlowLayout());
-        enviarComando.setPreferredSize(new Dimension(50,80));
-        JButton enviar = new JButton("Listo");
-        enviarComando.add(enviar);
-        panelComandos.add(enviarComando);
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BorderLayout());
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(enviarButton, BorderLayout.EAST);
 
-        panelGral.add(panelComandos);
+        panel.add(inputPanel, BorderLayout.SOUTH);
 
-        consola.setVisible(true);
+        getContentPane().add(panel);
+
 
     }
 
-
+    private void enviarMensaje() {
+        String mensaje = inputField.getText();
+        if (!mensaje.isEmpty()) {
+            chatArea.append("Tú: " + mensaje + "\n");
+            inputField.setText("");
+        }
+    }
 
     @Override
     public void iniciar() {
-
+        setVisible(true);
     }
 
     @Override

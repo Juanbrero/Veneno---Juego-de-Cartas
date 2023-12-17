@@ -1,27 +1,32 @@
 package cliente;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
 import ar.edu.unlu.rmimvc.cliente.Cliente;
 import controlador.Controlador;
 import vista.IVista;
+import vista.consola.VistaConsola;
 import vista.grafica.VistaInicio;
 
 public class AppCliente {
-
+    
     public static void main(String[] args) {
-        ArrayList<String> ips = Util.getIpDisponibles();
+
+        final ArrayList<String>[] ips = new ArrayList[]{Util.getIpDisponibles()};
         String ip = (String) JOptionPane.showInputDialog(
                 null,
                 "Seleccione la IP en la que escuchará peticiones el cliente", "IP del cliente",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                ips.toArray(),
+                ips[0].toArray(),
                 null
         );
         String port = (String) JOptionPane.showInputDialog(
@@ -48,10 +53,33 @@ public class AppCliente {
                 null,
                 8888
         );
+
+        /**
+         * Crea las opciones para elegir entre modo consola y modo grafico.
+         */
+
+        String modo  = (String) JOptionPane.showInputDialog(
+                null,
+                "Seleccione el modo de juego (Grafico [1]/Consola [2]", "Modo de juego",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                null,
+                1
+        );
+
+
         Controlador controlador = new Controlador();
-        IVista iVista = new VistaInicio(controlador);
+        if(modo.equals("1")) {
+
+            IVista iVista = new VistaInicio(controlador);
+            iVista.iniciar();
+        }
+        else {
+            IVista iVista = new VistaConsola(controlador);
+            iVista.iniciar();
+        }
+
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
-        iVista.iniciar();
         try {
             c.iniciar(controlador);
         } catch (RemoteException e) {
