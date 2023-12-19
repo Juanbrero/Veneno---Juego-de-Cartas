@@ -105,7 +105,7 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void jugarTurno() {
-        mostrarMensaje("Tu turno!\nSelecciona una carta de tu mano:\n");
+        mostrarMensaje("-Tu turno!\n\nPuntaje: " + puntos + "\n\n-Selecciona una carta de tu mano:\n");
 
         for (int j = 0; j < mano.size(); j++) {
             if (mano.get(j).isEnMano()) {
@@ -230,6 +230,43 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void finJuego(ArrayList<String> resultados) {
+        JPanel panelFin = new JPanel(new FlowLayout());
+
+        JLabel tituloFin = new JLabel("¡FIN DEL JUEGO!\n");
+        panelFin.add(tituloFin);
+
+        JLabel labelResultados = new JLabel("Resultados de la partida:\n");
+        panelFin.add(labelResultados);
+
+        for (int i = 0; i < resultados.size(); i++) {
+            JLabel jugador = new JLabel(resultados.get(i) + "\n");
+            panelFin.add(jugador);
+        }
+
+        JDialog panelDialogo = new JDialog(this);
+        panelDialogo.setLocationRelativeTo(this);
+        panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JButton ok = new JButton("OK");
+        JPanel botonOk = new JPanel();
+        botonOk.add(ok);
+        JPanel elementos = new JPanel(new GridLayout(2,1));
+        elementos.add(panelFin);
+        elementos.add(botonOk);
+        panelDialogo.add(elementos);
+
+        panelDialogo.setSize(250, 250);
+
+        ok.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelDialogo.dispose();
+                dispose();
+                inicio.getPantallaMenu().setVisible(true);
+            }
+        });
+
+        panelDialogo.setVisible(true);
 
     }
 

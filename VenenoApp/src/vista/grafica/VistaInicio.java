@@ -160,14 +160,14 @@ public class VistaInicio implements IVista {
 
         JPanel panelFin = new JPanel(new FlowLayout());
 
-        JLabel tituloFin = new JLabel("¡FIN DEL JUEGO!");
+        JLabel tituloFin = new JLabel("¡FIN DEL JUEGO!\n");
         panelFin.add(tituloFin);
 
-        JLabel labelResultados = new JLabel("Resultados de la partida:");
+        JLabel labelResultados = new JLabel("Resultados de la partida:\n");
         panelFin.add(labelResultados);
 
         for (int i = 0; i < resultados.size(); i++) {
-            JLabel jugador = new JLabel(resultados.get(i));
+            JLabel jugador = new JLabel(resultados.get(i) + "\n");
             panelFin.add(jugador);
         }
 
