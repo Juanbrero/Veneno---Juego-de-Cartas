@@ -100,26 +100,28 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void reiniciarMano() {
-
+        mano.clear();
     }
 
     @Override
     public void jugarTurno() {
-        mostrarMensaje("Tu turno!\nSelecciona una carta de tu mano {");
+        mostrarMensaje("Tu turno!\nSelecciona una carta de tu mano:\n");
 
         for (int j = 0; j < mano.size(); j++) {
             if (mano.get(j).isEnMano()) {
-                areaTexto.append(" <" + (j+1) + "> ");
-            }
-        }
-        areaTexto.append("}\n");
-
-        for (int i = 0; i < mano.size(); i++) {
-            if (mano.get(i).isEnMano()) {
-                areaTexto.append(mano.get(i).toString() + " ");
+                areaTexto.append("\t<" + (j+1) + "> ");
             }
         }
         areaTexto.append("\n");
+
+        for (int i = 0; i < mano.size(); i++) {
+            if (mano.get(i).isEnMano()) {
+                areaTexto.append("\t" + mano.get(i).toString() + " ");
+            }
+        }
+        areaTexto.append("\n");
+
+        mostrarMensaje("\nSuma acumulada en mesa:\n\tBasto [" + sumaValorPilaBasto + "]\tOro [" + sumaValorPilaOro + "]\tEspada [" + sumaValorPilaEspada + "]\n");
     }
 
     @Override
@@ -143,7 +145,7 @@ public class VistaConsola extends JFrame implements IVista {
 
                 if (op > 0 && op < 5 && mano.get(op - 1).isEnMano()) { //es una carta valida para jugar
                     if (mano.get(op - 1).isCopa()) {
-                        mostrarMensaje("Selecciona la pila a envenenar:\n[B]Basto [O]Oro [E]Espada\n");
+                        mostrarMensaje("Selecciona la pila a envenenar:\n\t[B]Basto\t[O]Oro\t[E]Espada\n");
                         envenenar = true;
 
                     } else {
@@ -184,18 +186,46 @@ public class VistaConsola extends JFrame implements IVista {
     }
 
     @Override
-    public void agregarCartaEnMesa(String string, double valor) {
+    public void agregarCartaEnMesa(String palo, double valor) {
 
+        switch (palo) {
+            case "ORO" -> {
+                sumaValorPilaOro += valor;
+            }
+            case "BASTO" -> {
+                sumaValorPilaBasto += valor;
+            }
+            case "ESPADA" -> {
+                sumaValorPilaEspada += valor;
+            }
+        }
     }
 
     @Override
     public void reiniciarPila(String pilaAReiniciar) {
 
+        if(pilaAReiniciar.equals("ORO")) {
+            sumaValorPilaOro = 0;
+        }
+        else if (pilaAReiniciar.equals("BASTO")) {
+            sumaValorPilaBasto = 0;
+        }
+        else {
+            sumaValorPilaEspada = 0;
+        }
     }
 
     @Override
     public void levantarCartas(int puntos) {
+        if (puntos > 0) {
 
+            mostrarMensaje("Envenenado! sumas " + puntos + " puntos.\n");
+            this.puntos += puntos;
+            mostrarMensaje("Puntos acumulados: " + this.puntos + "\n");
+        }
+        else {
+            mostrarMensaje("Uuuf, que cerca! No sumaste puntos! :)\n");
+        }
     }
 
     @Override

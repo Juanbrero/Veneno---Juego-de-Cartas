@@ -24,7 +24,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int cantidadJugadores;
     private int jugadoresConectados = 0;
     private int jugadorActual = 0;
-    private int cantidadRondas = 1;
+    private int cantidadRondas = 2;
     private int rondaActual = 0;
     private int manosJugadas = 0;
     private Carta cartaJugadaTurnoActual;
