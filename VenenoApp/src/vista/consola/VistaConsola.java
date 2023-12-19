@@ -5,7 +5,6 @@ import modelo.baraja.Carta;
 import vista.IVista;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,73 +14,38 @@ import java.util.ArrayList;
 public class VistaConsola extends JFrame implements IVista {
 
     private Controlador controlador;
-    private JFrame consola;
-    private String nombre;
+    private VistaInicioConsola inicio;
+    private boolean envenenar = false;
+    private int op;
     private double sumaValorPilaOro = 0;
     private double sumaValorPilaBasto = 0;
     private double sumaValorPilaEspada = 0;
     private int puntos = 0;
-    private JPanel panelGral;
-    private JPanel panelTexto;
-    private JPanel panelComandos;
-    private JTextArea chatArea;
-    private JTextField inputField;
+    private JTextArea areaTexto;
+    private JTextField inputAccion;
+    private ArrayList<Carta> mano = new ArrayList<>();
 
 
     public VistaConsola(Controlador controlador) {
 
         this.controlador = controlador;
+        this.controlador.setVista(this);
+        this.inicio = new VistaInicioConsola(this);
 
-//        consola = new JFrame("Veneno - Juego de cartas");
-//        consola.setSize(750, 580);
-//        consola.setLocationRelativeTo(null);
-//        consola.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//
-//        panelGral = (JPanel) consola.getContentPane();
-//        panelGral.setLayout(new BorderLayout());
-//
-//        /* panel de texto de la consola.*/
-//        panelTexto = new JPanel(new FlowLayout());
-//        panelTexto.setPreferredSize(new Dimension(750,500));
-//        JTextField campoTexto = new JTextField();
-//        campoTexto.setPreferredSize(new Dimension(750,500));
-//        panelTexto.add(campoTexto);
-//
-//        panelGral.add(panelTexto, BorderLayout.CENTER);
-//
-//        /* panel de comandos */
-//        panelComandos = new JPanel(new GridLayout(1,2));
-//        panelComandos.setBorder(new LineBorder(Color.DARK_GRAY));
-//        panelComandos.setPreferredSize(new Dimension(750,80));
-//        JPanel ingresoComando = new JPanel(new FlowLayout());
-//        ingresoComando.setPreferredSize(new Dimension(700,80));
-//        JTextArea lineaComando = new JTextArea();
-//        ingresoComando.add(lineaComando,FlowLayout.LEFT);
-//        panelComandos.add(ingresoComando);
-//
-//        /* Boton para enviar el comando */
-//        JPanel enviarComando = new JPanel(new FlowLayout());
-//        enviarComando.setPreferredSize(new Dimension(50,80));
-//        JButton enviar = new JButton("Listo");
-//        enviarComando.add(enviar);
-//        panelComandos.add(enviarComando);
-//
-//        panelGral.add(panelComandos, BorderLayout.SOUTH);
-
-        setTitle("Chat Console");
+        setTitle("Veneno - Juego de cartas");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(chatArea);
+        areaTexto = new JTextArea();
+        areaTexto.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(areaTexto);
 
-        inputField = new JTextField();
+        inputAccion = new JTextField();
         JButton enviarButton = new JButton("Enviar");
         enviarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                enviarMensaje();
+                SeleccionarPila();
             }
         });
 
@@ -91,42 +55,47 @@ public class VistaConsola extends JFrame implements IVista {
 
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
-        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(inputAccion, BorderLayout.CENTER);
         inputPanel.add(enviarButton, BorderLayout.EAST);
 
         panel.add(inputPanel, BorderLayout.SOUTH);
 
         getContentPane().add(panel);
 
-
     }
 
-    private void enviarMensaje() {
-        String mensaje = inputField.getText();
-        if (!mensaje.isEmpty()) {
-            chatArea.append("Tú: " + mensaje + "\n");
-            inputField.setText("");
-        }
+    public Controlador getControlador() {
+        return controlador;
     }
+
 
     @Override
     public void iniciar() {
-        setVisible(true);
+        setVisible(false);
+        this.inicio.getPantallaMenu().setVisible(true);
     }
 
     @Override
     public void colaDeEspera(int conectados, int jugadores) {
-
+        areaTexto.append("Esperando al resto de jugadores.. [" + conectados + "/" + jugadores + "]\n");
     }
 
     @Override
     public void iniciarPartida() {
 
+        areaTexto.append("Inicia la partida!\n");
     }
 
     @Override
     public void generarCartas(ArrayList<Carta> cartas) {
-
+        mano = cartas;
+        areaTexto.append("Tus cartas son: ");
+        for (int i = 0; i < mano.size(); i++) {
+            if (mano.get(i).isEnMano()) {
+                areaTexto.append(mano.get(i).toString() + " ");
+            }
+        }
+        areaTexto.append("\n");
     }
 
     @Override
@@ -136,17 +105,82 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void jugarTurno() {
+        mostrarMensaje("Tu turno!\nSelecciona una carta de tu mano {");
 
+        for (int j = 0; j < mano.size(); j++) {
+            if (mano.get(j).isEnMano()) {
+                areaTexto.append(" <" + (j+1) + "> ");
+            }
+        }
+        areaTexto.append("}\n");
+
+        for (int i = 0; i < mano.size(); i++) {
+            if (mano.get(i).isEnMano()) {
+                areaTexto.append(mano.get(i).toString() + " ");
+            }
+        }
+        areaTexto.append("\n");
     }
 
     @Override
     public void mostrarMensaje(String s) {
+        areaTexto.append(s);
+    }
+
+    private void SeleccionarPila() {
+        String mensaje = inputAccion.getText();
+
+        if (!mensaje.isEmpty()) {
+
+            areaTexto.append(inicio.getNombre() + ": " + mensaje + "\n");
+            inputAccion.setText("");
+            if (!envenenar) {   //Si es false el input corresponde a la seleccion de la carta a tirar
+
+                if(Character.isDigit(mensaje.charAt(0))){
+
+                    op = Integer.parseInt(mensaje);
+                }
+
+                if (op > 0 && op < 5 && mano.get(op - 1).isEnMano()) { //es una carta valida para jugar
+                    if (mano.get(op - 1).isCopa()) {
+                        mostrarMensaje("Selecciona la pila a envenenar:\n[B]Basto [O]Oro [E]Espada\n");
+                        envenenar = true;
+
+                    } else {
+                        controlador.tirarCarta(op - 1, mano.get(op - 1).getPalo().toString());
+                        envenenar = false;
+                    }
+                }
+                else {
+                    areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
+                }
+            }
+            else {  //si es true entonces el input corresponde a la pila a envenenar.
+
+                switch (mensaje.toUpperCase()) {
+                    case "B":
+                        controlador.tirarCarta(op - 1, "BASTO");
+                        break;
+                    case "O":
+                        controlador.tirarCarta(op - 1, "ORO");
+                        break;
+                    case "E":
+                        controlador.tirarCarta(op - 1, "ESPADA");
+                        break;
+                    default:
+                        areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
+                        break;
+                }
+                envenenar = false;
+
+            }
+        }
 
     }
 
     @Override
     public void tirarCarta(int cartaJugada) {
-
+        this.mano.get(cartaJugada).setEnMano(false);
     }
 
     @Override
@@ -166,6 +200,13 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void finJuego(ArrayList<String> resultados) {
+
+    }
+
+    public static void main(String[] args) {
+
+        VistaConsola consola = new VistaConsola(new Controlador());
+        consola.iniciar();
 
     }
 

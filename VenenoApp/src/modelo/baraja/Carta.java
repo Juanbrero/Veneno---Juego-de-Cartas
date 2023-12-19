@@ -84,4 +84,8 @@ public class Carta implements Serializable {
         return esCopa;
     }
 
+    @Override
+    public String toString() {
+        return "[" + nro + " " + palo + "]";
+    }
 }

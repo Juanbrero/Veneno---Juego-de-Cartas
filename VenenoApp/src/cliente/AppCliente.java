@@ -69,6 +69,8 @@ public class AppCliente {
 
 
         Controlador controlador = new Controlador();
+
+        Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         if(modo.equals("1")) {
 
             IVista iVista = new VistaInicio(controlador);
@@ -78,8 +80,6 @@ public class AppCliente {
             IVista iVista = new VistaConsola(controlador);
             iVista.iniciar();
         }
-
-        Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         try {
             c.iniciar(controlador);
         } catch (RemoteException e) {

@@ -356,7 +356,6 @@ public class VistaInicio implements IVista {
                 if (nombre.isEmpty()) {
                     nombre = "AnonPlayer" + this.hashCode();
                 }
-//                pantallaMenu.dispose();
                 System.out.println("vista > me voy a conectar a la partida");
                 controlador.conectarse(nombre);
                 System.out.println("vista > me conecte");
