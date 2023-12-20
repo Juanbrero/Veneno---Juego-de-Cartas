@@ -11,7 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class VistaGrafica {
+public class VistaGrafica{
 
     private VistaInicio pantallaMenu;
     private JFrame pantallaJuego;
@@ -56,7 +56,7 @@ public class VistaGrafica {
         pantallaJuego = new JFrame("Veneno - Juego de cartas");
         pantallaJuego.setSize(850, 680);
         pantallaJuego.setLocationRelativeTo(null);
-        pantallaJuego.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        pantallaJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         panelPrincipal = (JPanel) pantallaJuego.getContentPane();
         panelPrincipal.setLayout(new BorderLayout());
@@ -73,6 +73,8 @@ public class VistaGrafica {
         return pantallaJuego;
     }
 
+
+    /*--------------------- Metodos de la clase ---------------------*/
 
     /**
      * Informa al controlador de la carta a tirar. Verifica si la carta es de copa, en dicho caso pide seleccionar
@@ -355,4 +357,17 @@ public class VistaGrafica {
 
     }
 
+    public void restablecerSesion() {
+
+        pantallaJuego.repaint();
+        sumaValorPilaOro = 0;
+        sumaValorPilaBasto = 0;
+        sumaValorPilaEspada = 0;
+        sumOro = new JLabel("Acumulado: 0");
+        sumBasto = new JLabel("Acumulado: 0");
+        sumEspada = new JLabel("Acumulado: 0");
+        puntos = 0;
+        panelPuntos = new JLabel("Puntos: " + puntos);
+
+    }
 }

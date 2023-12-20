@@ -199,6 +199,13 @@ public class VistaInicio implements IVista {
     }
 
 
+    public void restablecerSesion() {
+
+        pantallaJuego.restablecerSesion();
+
+    }
+
+
     public void mostrarMensaje(String mensaje) {
 
         JPanel panelMnsj = new JPanel();
@@ -358,6 +365,7 @@ public class VistaInicio implements IVista {
                 }
                 System.out.println("vista > me voy a conectar a la partida");
                 controlador.conectarse(nombre);
+//                pantallaMenu.setVisible(false);
                 System.out.println("vista > me conecte");
 
             }

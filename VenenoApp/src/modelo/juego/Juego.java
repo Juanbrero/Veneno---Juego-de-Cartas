@@ -24,7 +24,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int cantidadJugadores;
     private int jugadoresConectados = 0;
     private int jugadorActual = 0;
-    private int cantidadRondas = 2;
+    private int cantidadRondas = 1;
     private int rondaActual = 0;
     private int manosJugadas = 0;
     private Carta cartaJugadaTurnoActual;
@@ -299,7 +299,28 @@ public class Juego extends ObservableRemoto implements IJuego {
         //Genero una lista ordenada de los jugadores segun los puntos obtenidos
         resultadosFinales = jugadores.stream().sorted(Comparator.comparingInt(Jugador::getPuntos)).toList();
         notificarObservadores(Evento.FIN_JUEGO);
+        restablecerSesion();
 
+    }
+
+    private void restablecerSesion() {
+
+        pilaOro.reinicarPila();
+        pilaEspada.reinicarPila();
+        pilaBasto.reinicarPila();
+        mazo.juntarCartas();
+        jugadores.clear();
+        cantidadJugadores = 0;
+        jugadoresConectados = 0;
+        jugadorActual = 0;
+//        cantidadRondas = 0;
+        rondaActual = 0;
+        manosJugadas = 0;
+        cartaJugadaTurnoActual = null;
+        indiceCartaJugadaTurnoActual = 0;
+        pilaActualizada = null;
+        reiniciarPila = false;
+        resultadosFinales.clear();
     }
 
 
