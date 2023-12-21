@@ -1,0 +1,85 @@
+package modelo.serializacion;
+
+import java.io.*;
+import java.util.ArrayList;
+
+public class Serializador {
+
+    private String nomArch;
+
+    public Serializador (String nomArch) {
+        super();
+        this.nomArch = nomArch;
+    }
+
+    public boolean writeOneObject(Object obj) {
+        boolean respuesta = false;
+
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomArch));
+            oos.writeObject(obj);
+            oos.close();
+            respuesta = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return respuesta;
+    }
+
+    public boolean addOneObject(Object obj) {
+        boolean respuesta = false;
+
+        try {
+            AddableObjectOutputStream oos = new AddableObjectOutputStream (new FileOutputStream(nomArch,true));
+            oos.writeObject(obj);
+            oos.close();
+            respuesta = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return respuesta;
+    }
+
+    public Object[] readObjects() {
+        Object[] respuesta;
+        ArrayList<Object> listaObjetos = new ArrayList<Object>();
+
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomArch));
+
+            Object r = ois.readObject();
+            while (r != null) {
+                listaObjetos.add(r);
+                r = ois.readObject();
+            }
+            ois.close();
+        } catch (EOFException e) {
+            System.out.println("\nLectura completada\n");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!listaObjetos.isEmpty()) {
+            respuesta = new Object[listaObjetos.size()];
+            int count = 0;
+            for (Object o : listaObjetos) {
+                respuesta[count ++] = o;
+            }
+        }
+        else {
+            respuesta = null;
+        }
+
+        return respuesta;
+    }
+}

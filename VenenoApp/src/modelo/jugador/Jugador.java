@@ -13,10 +13,28 @@ public class Jugador implements Serializable {
     private int puntosALevantar = 0;
     private boolean miTurno = false;
     private ArrayList<Carta> cartasEnMano = new ArrayList<>();
+    private int partidasJugadas = 0;
+    private double ratio;
 
     public Jugador(String nombre, int id) {
         this.nombre = nombre;
         this.id = id;
+    }
+
+    public double getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(double ratio) {
+        this.ratio = ratio;
+    }
+
+    public int getPartidasJugadas() {
+        return partidasJugadas;
+    }
+
+    public void setPartidasJugadas(int partidasJugadas) {
+        this.partidasJugadas = partidasJugadas;
     }
 
     public ArrayList<Carta> getCartasEnMano() {

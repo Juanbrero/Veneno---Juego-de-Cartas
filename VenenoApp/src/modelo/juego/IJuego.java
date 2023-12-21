@@ -48,4 +48,6 @@ public interface IJuego extends IObservableRemoto {
 
     Jugador obtenerJugadorActual() throws RemoteException;
 
+//    ArrayList<Jugador> recuperarDatos() throws RemoteException;
+
 }

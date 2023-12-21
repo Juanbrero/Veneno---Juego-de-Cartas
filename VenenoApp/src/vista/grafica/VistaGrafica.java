@@ -359,15 +359,12 @@ public class VistaGrafica{
 
     public void restablecerSesion() {
 
-        pantallaJuego.repaint();
-        sumaValorPilaOro = 0;
-        sumaValorPilaBasto = 0;
-        sumaValorPilaEspada = 0;
-        sumOro = new JLabel("Acumulado: 0");
-        sumBasto = new JLabel("Acumulado: 0");
-        sumEspada = new JLabel("Acumulado: 0");
+        reiniciarPila("BASTO");
+        reiniciarPila("ORO");
+        reiniciarPila("ESPADA");
         puntos = 0;
-        panelPuntos = new JLabel("Puntos: " + puntos);
+        panelPuntos.setText("Puntos: " + puntos);
+        pantallaJuego.repaint();
 
     }
 }

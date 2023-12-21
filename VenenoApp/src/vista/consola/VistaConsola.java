@@ -287,11 +287,10 @@ public class VistaConsola extends JFrame implements IVista {
         mano.clear();
     }
 
-    public static void main(String[] args) {
-
-        VistaConsola consola = new VistaConsola(new Controlador());
-        consola.iniciar();
+    @Override
+    public void ranking(ArrayList<String> resultados) {
 
     }
+
 
 }

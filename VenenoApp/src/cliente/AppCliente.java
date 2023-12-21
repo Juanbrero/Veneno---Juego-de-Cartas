@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -67,8 +68,11 @@ public class AppCliente {
                 1
         );
 
-
-        Controlador controlador = new Controlador();
+        Random generador = new Random();
+        int num = generador.nextInt();
+        System.out.println(num);
+        Controlador controlador = new Controlador(num);
+        System.out.println("cliente > id controlador: " + controlador);
 
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         if(modo.equals("1")) {

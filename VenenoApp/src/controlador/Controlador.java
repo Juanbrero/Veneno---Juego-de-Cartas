@@ -9,12 +9,15 @@ import modelo.juego.IJuego;
 import modelo.jugador.Jugador;
 import vista.IVista;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class Controlador implements IControladorRemoto {
+public class Controlador implements IControladorRemoto, Serializable {
 
+    private int nroSerie;
     private IVista vista;
     private Jugador jugador;
     private int id;
@@ -22,8 +25,8 @@ public class Controlador implements IControladorRemoto {
     private boolean miTurno;
 
 
-    public Controlador() {
-
+    public Controlador(int nroSerie) {
+        this.nroSerie = nroSerie;
     }
 
     public void setVista(IVista vista) {
@@ -125,6 +128,25 @@ public class Controlador implements IControladorRemoto {
     }
 
 
+//    public void verEstadisticas() {
+//
+//        try {
+//            List<Jugador> temp;
+//            temp = juego.recuperarDatos().stream().sorted(Comparator.comparingDouble(Jugador::getRatio)).toList();
+//            ArrayList<String> resultados = new ArrayList<>();
+//
+//            for (int i = 0; i < temp.size(); i++) {
+//                resultados.add("- " + temp.get(i).getNombre() + " Ratio puntos/partida: " + temp.get(i).getRatio() + " Partidas jugadas: " + temp.get(i).getPartidasJugadas());
+//            }
+//
+//            vista.ranking(resultados);
+//
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
     /* ------------- Metodos de actualizacion  ------------ */
 
 
@@ -137,7 +159,13 @@ public class Controlador implements IControladorRemoto {
             if (this.juego.getJugadoresConectados() < this.juego.getCantidadJugadores()) {
                 /* Si faltan jugadores por conectarse agrego al jugador actual a una cola de espera */
                 System.out.println("controlador > en cola de espera");
-                vista.colaDeEspera(this.juego.getJugadoresConectados(), this.juego.getCantidadJugadores());
+                System.out.println("controlador > " + this.juego.getJugadoresConectados() + " / "+ this.juego.getCantidadJugadores());
+
+                /* Solo agrego a la cola de espera cuando le dan al boton start.*/
+                if((this.juego.getJugadoresConectados() - 1 ) == this.id){
+
+                    vista.colaDeEspera(this.juego.getJugadoresConectados(), this.juego.getCantidadJugadores());
+                }
             }
         }
         catch (RemoteException e) {

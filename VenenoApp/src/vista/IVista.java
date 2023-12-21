@@ -31,4 +31,6 @@ public interface IVista {
     void finJuego(ArrayList<String> resultados);
 
     void restablecerSesion();
+
+    void ranking(ArrayList<String> resultados);
 }

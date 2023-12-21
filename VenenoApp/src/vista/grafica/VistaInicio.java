@@ -38,13 +38,15 @@ public class VistaInicio implements IVista {
         pantallaMenu = new JFrame("Veneno - Juego de cartas");
         pantallaMenu.setSize(450, 300);
         pantallaMenu.setLocationRelativeTo(null); // Centra la ventana
-        pantallaMenu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //Operacion de cierre
+        pantallaMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Operacion de cierre
 
         panelesGenerales();
 
         datosUsuario();
 
         menuCantidadJugadores();
+
+        verEstadisticas();
 
         botonStart();
 
@@ -196,6 +198,8 @@ public class VistaInicio implements IVista {
 
         panelDialogo.setVisible(true);
 
+        restablecerSesion();
+
     }
 
 
@@ -205,6 +209,17 @@ public class VistaInicio implements IVista {
 
     }
 
+
+    public void ranking(ArrayList<String> resultados) {
+
+        JPanel panelMnsj = new JPanel();
+        for (int i = 0; i < resultados.size(); i++) {
+
+            JLabel mnsj = new JLabel(resultados.get(i) + "\n");
+            panelMnsj.add(mnsj);
+        }
+        nuevoDialogo(panelMnsj);
+    }
 
     public void mostrarMensaje(String mensaje) {
 
@@ -265,7 +280,7 @@ public class VistaInicio implements IVista {
         panelMenu = new JPanel(new FlowLayout());
 
         //Panel de opciones
-        menuOpciones = new JPanel(new GridLayout(5,1));
+        menuOpciones = new JPanel(new GridLayout(6,1));
 
         //Agrego el panel de opciones al panel del menu y luego agrego el panel de menu al panel principal.
         panelMenu.add(menuOpciones);
@@ -370,6 +385,23 @@ public class VistaInicio implements IVista {
 
             }
         });
+    }
+
+    public void verEstadisticas() {
+
+        JButton stats = new JButton("Ranking Global");
+        stats.setPreferredSize(new Dimension(80,40));
+        menuOpciones.add(stats);
+
+        stats.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+//                controlador.verEstadisticas();
+
+            }
+        });
+
     }
 
 }
