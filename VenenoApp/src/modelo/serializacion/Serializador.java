@@ -70,16 +70,40 @@ public class Serializador {
         }
 
         if (!listaObjetos.isEmpty()) {
+            System.out.println("serializador > la lista tiene " + listaObjetos.size() + " elementos");
             respuesta = new Object[listaObjetos.size()];
             int count = 0;
             for (Object o : listaObjetos) {
                 respuesta[count ++] = o;
+                System.out.println("serializador > " + count);
             }
         }
         else {
+            System.out.println("serializador > no hay datos");
             respuesta = null;
         }
 
         return respuesta;
     }
+
+    public void borrarArchivo() {
+
+        File arch = new File(nomArch);
+        if (arch.exists()) {
+            arch.delete();
+        }
+
+
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomArch))) {
+//            // Sobrescribir el archivo con un objeto vacío o null
+//            oos.writeObject(null);
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
 }

@@ -128,23 +128,23 @@ public class Controlador implements IControladorRemoto, Serializable {
     }
 
 
-//    public void verEstadisticas() {
-//
-//        try {
-//            List<Jugador> temp;
-//            temp = juego.recuperarDatos().stream().sorted(Comparator.comparingDouble(Jugador::getRatio)).toList();
-//            ArrayList<String> resultados = new ArrayList<>();
-//
-//            for (int i = 0; i < temp.size(); i++) {
-//                resultados.add("- " + temp.get(i).getNombre() + " Ratio puntos/partida: " + temp.get(i).getRatio() + " Partidas jugadas: " + temp.get(i).getPartidasJugadas());
-//            }
-//
-//            vista.ranking(resultados);
-//
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void verEstadisticas() {
+
+        try {
+            List<Jugador> temp;
+            temp = juego.recuperarDatos().stream().sorted(Comparator.comparingDouble(Jugador::getRatio)).toList();
+            ArrayList<String> resultados = new ArrayList<>();
+
+            for (int i = 0; i < temp.size(); i++) {
+                resultados.add("#" + (i+1) + " Player " + temp.get(i).getNombre() + "     Ratio puntos/partida: " + temp.get(i).getRatio() + "   Partidas jugadas: " + temp.get(i).getPartidasJugadas());
+            }
+
+            vista.ranking(resultados);
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /* ------------- Metodos de actualizacion  ------------ */

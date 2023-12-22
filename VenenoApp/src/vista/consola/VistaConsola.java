@@ -134,6 +134,7 @@ public class VistaConsola extends JFrame implements IVista {
         areaTexto.append(s);
     }
 
+
     private void SeleccionarPila() {
         String mensaje = inputAccion.getText();
 
@@ -290,6 +291,28 @@ public class VistaConsola extends JFrame implements IVista {
     @Override
     public void ranking(ArrayList<String> resultados) {
 
+        JPanel panelMnsj = new JPanel();
+        panelMnsj.setLayout(new GridLayout(15,1));
+        int i = 0;
+        while(i < 10 && i < resultados.size()) {
+
+            JLabel mnsj = new JLabel(resultados.get(i) + "\n");
+            panelMnsj.add(mnsj);
+            i++;
+        }
+
+        JDialog panelDialogo = new JDialog(this.inicio.getPantallaMenu());
+        panelDialogo.setAlwaysOnTop(true);
+        panelDialogo.setLocationRelativeTo(this.inicio.getPantallaMenu());
+        panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JPanel elementos = new JPanel(new GridLayout(10,1));
+        elementos.add(panelMnsj);
+        panelDialogo.add(panelMnsj);
+
+        panelDialogo.setSize(450, 450);
+
+        panelDialogo.setVisible(true);
     }
 
 

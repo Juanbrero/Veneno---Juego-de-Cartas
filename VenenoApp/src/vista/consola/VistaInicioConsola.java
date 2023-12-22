@@ -36,6 +36,8 @@ public class VistaInicioConsola{
 
         menuCantidadJugadores();
 
+        verEstadisticas();
+
         botonStart();
 
         JLabel copyright = new JLabel("Por Juan Brero");
@@ -143,6 +145,27 @@ public class VistaInicioConsola{
 
 
     /**
+     * Crea el menu para ver el ranking de jugadores.
+     */
+    public void verEstadisticas() {
+
+        JButton stats = new JButton("Ranking Global");
+        stats.setPreferredSize(new Dimension(80,40));
+        menuOpciones.add(stats);
+
+        stats.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                consola.getControlador().verEstadisticas();
+
+            }
+        });
+
+    }
+
+
+    /**
      * Crea el boton de inicio y define su actionListener.
      */
     private void botonStart() {
@@ -164,6 +187,7 @@ public class VistaInicioConsola{
                 }
                 System.out.println("vista > me voy a conectar a la partida");
                 consola.getControlador().conectarse(nombre);
+                nombreUsuario.setText("");
                 pantallaMenu.setVisible(false);
                 consola.setVisible(true);
                 System.out.println("vista > me conecte");

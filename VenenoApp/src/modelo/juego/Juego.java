@@ -9,10 +9,6 @@ import modelo.baraja.PilaPalo;
 import modelo.jugador.Jugador;
 import modelo.serializacion.Serializador;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,7 +26,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int cantidadJugadores;
     private int jugadoresConectados = 0;
     private int jugadorActual = 0;
-    private int cantidadRondas = 1;
+    private int cantidadRondas = 2;
     private int rondaActual = 0;
     private int manosJugadas = 0;
     private Carta cartaJugadaTurnoActual;
@@ -306,82 +302,119 @@ public class Juego extends ObservableRemoto implements IJuego {
         resultadosFinales = jugadores.stream().sorted(Comparator.comparingInt(Jugador::getPuntos)).toList();
         notificarObservadores(Evento.FIN_JUEGO);
 
-//        guardarResultados();
+        guardarResultados();
 
         restablecerSesion();
 
     }
 
-//    private void guardarResultados() {
-//
-//        if (!resultadosFinales.isEmpty()) {
-//
-//            for (int i = 0; i < resultadosFinales.size(); i++) {
-//
-//                Jugador temp = buscarHistorialJugador(resultadosFinales.get(i));
-//                if (temp != null) {
-//                    //sobreescribir datos
-//                    /* Actualizo el ratio de puntos por partida del jugador sumando los puntos actuales con el historico*/
-//                    resultadosFinales.get(i).setPartidasJugadas(resultadosFinales.get(i).getPartidasJugadas() + 1);
-//                    double ratio = (double) (resultadosFinales.get(i).getPuntos() + temp.getPuntos()) / resultadosFinales.get(i).getPartidasJugadas();
-//                    resultadosFinales.get(i).setRatio(ratio);
-//                }
-//                else {
-//                    //jugador nuevo.
-//                    /* Actualizo el ratio de puntos por partida del jugador */
-//                    resultadosFinales.get(i).setPartidasJugadas(1);
-//                    resultadosFinales.get(i).setRatio(resultadosFinales.get(i).getPuntos());
-//                }
-//            }
-//
-//            /* Si el archivo de datos esta vacio (primera partida) escribo la cabecera.*/
-//            if (serializador.readObjects() == null) {
-//
-//                serializador.writeOneObject(resultadosFinales.get(0));
-//            }
-//            /* Si el archivo ya contiene datos, agrego manualmente el primer objeto para luego agregar el resto. */
-//            else {
-//                serializador.addOneObject(resultadosFinales.get(0));
-//            }
-//
-//            for (int i = 1; i < resultadosFinales.size(); i++) {
-//                serializador.addOneObject(resultadosFinales.get(i));
-//            }
-//
-//        }
-//    }
-//
-//    private Jugador buscarHistorialJugador(Jugador jugador) {
-//        Object[] datos = serializador.readObjects();
-//        ArrayList<Jugador> recuperado = new ArrayList<>();
-//
-//        for (int i = 0; i < datos.length; i++) {
-//            recuperado.add((Jugador)datos[i]);
-//        }
-//
-//        for (int j = 0; j < recuperado.size(); j++) {
-//            if(recuperado.get(j).getNombre().equals(jugador.getNombre())) {
-//                return recuperado.get(j);
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public ArrayList<Jugador> recuperarDatos() throws RemoteException {
-//
-//        Object[] recuperado = serializador.readObjects();
-//        ArrayList<Jugador> datos = new ArrayList<>();
-//
-//        for (int i = 0; i < recuperado.length; i++) {
-//            datos.add((Jugador)recuperado[i]);
-//        }
-//        for (int i = 0; i < recuperado.length; i++) {
-//            System.out.println(datos.get(i).getNombre() + datos.get(i).getRatio());
-//        }
-//
-//
-//        return datos;
-//    }
+    private void guardarResultados() throws RemoteException {
+
+        if (!resultadosFinales.isEmpty()) {
+
+            for (int i = 0; i < resultadosFinales.size(); i++) {
+
+                System.out.println("juego > buscando historial de jugador: " + resultadosFinales.get(i).getNombre());
+                Jugador temp = buscarHistorialJugador(resultadosFinales.get(i));
+                System.out.println("juego > puntos actuales: " + resultadosFinales.get(i).getPuntos());
+                if (temp != null) {
+                    System.out.println("juego > puntos historico: " + temp.getPuntos());
+                    //sobreescribir datos
+                    /* Actualizo el ratio de puntos por partida del jugador sumando los puntos actuales con el historico*/
+                    resultadosFinales.get(i).setPartidasJugadas(temp.getPartidasJugadas() + 1);
+                    double ratio = (double) (resultadosFinales.get(i).getPuntos() + temp.getPuntos()) / resultadosFinales.get(i).getPartidasJugadas();
+                    resultadosFinales.get(i).setRatio(ratio);
+                    System.out.println("juego > encontre al jugador");
+                    actualizarRegistros(resultadosFinales.get(i));
+
+                }
+                else {
+                    //jugador nuevo.
+                    /* Actualizo el ratio de puntos por partida del jugador */
+                    resultadosFinales.get(i).setPartidasJugadas(1);
+                    resultadosFinales.get(i).setRatio(resultadosFinales.get(i).getPuntos());
+                    System.out.println("juego > no encontre al jugador, es nuevo");
+
+                    /* Si el archivo de datos esta vacio (primera partida) escribo la cabecera.*/
+                    Jugador aux = resultadosFinales.get(i);
+                    if (serializador.readObjects() == null) {
+                        System.out.println("juego > no hay datos. escribo la cabecera");
+                        serializador.writeOneObject(aux);
+
+                    }
+                    else {
+
+                        System.out.println("juego > escribo el resto de jugadores");
+                        serializador.addOneObject(aux);
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    private Jugador buscarHistorialJugador(Jugador jugador) {
+        Object[] datos = serializador.readObjects();
+        if (datos != null) {
+
+            System.out.println(datos.length);
+            ArrayList<Jugador> recuperado = new ArrayList<>();
+
+            for (int i = 0; i < datos.length; i++) {
+                System.out.println("juego > recuperando a " + datos[i].toString());
+                recuperado.add((Jugador)datos[i]);
+                System.out.println("juego > recupere a " + recuperado.get(i).getNombre());
+            }
+
+            for (int j = 0; j < recuperado.size(); j++) {
+                if(recuperado.get(j).getNombre().equals(jugador.getNombre())) {
+                    return recuperado.get(j);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public ArrayList<Jugador> recuperarDatos() throws RemoteException {
+
+        Object[] recuperado = serializador.readObjects();
+        ArrayList<Jugador> datos = new ArrayList<>();
+
+        for (int i = 0; i < recuperado.length; i++) {
+            datos.add((Jugador)recuperado[i]);
+        }
+        for (int i = 0; i < recuperado.length; i++) {
+            System.out.println(datos.get(i).getNombre() + datos.get(i).getRatio());
+        }
+
+        return datos;
+    }
+
+    private void actualizarRegistros(Jugador jugador) throws RemoteException {
+        ArrayList<Jugador> modif = new ArrayList<>();
+        ArrayList<Jugador> og = recuperarDatos();
+        int indice = 0;
+        while (indice < og.size()) {
+           if (!og.get(indice).getNombre().equals(jugador.getNombre())) {
+
+                modif.add(og.get(indice));
+           }
+           else {
+               modif.add(jugador);
+           }
+           indice++;
+        }
+
+        serializador.borrarArchivo();
+        serializador.writeOneObject(modif.get(0));
+        for (int i = 1; i < modif.size(); i++) {
+
+            serializador.addOneObject(modif.get(i));
+        }
+
+    }
 
     private void restablecerSesion() {
 
@@ -389,7 +422,6 @@ public class Juego extends ObservableRemoto implements IJuego {
         pilaEspada.reinicarPila();
         pilaBasto.reinicarPila();
         mazo.juntarCartas();
-        jugadores.clear();
         cantidadJugadores = 0;
         jugadoresConectados = 0;
         jugadorActual = 0;
@@ -400,7 +432,9 @@ public class Juego extends ObservableRemoto implements IJuego {
         indiceCartaJugadaTurnoActual = 0;
         pilaActualizada = null;
         reiniciarPila = false;
+        jugadores.clear();
         resultadosFinales.clear();
+
     }
 
 

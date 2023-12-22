@@ -212,13 +212,29 @@ public class VistaInicio implements IVista {
 
     public void ranking(ArrayList<String> resultados) {
 
+        System.out.println("vista > el ranking tinene " + resultados.size() + " elementos");
         JPanel panelMnsj = new JPanel();
-        for (int i = 0; i < resultados.size(); i++) {
+        panelMnsj.setLayout(new GridLayout(15,1));
+        int i = 0;
+        while(i < 10 && i < resultados.size()) {
 
             JLabel mnsj = new JLabel(resultados.get(i) + "\n");
             panelMnsj.add(mnsj);
+            i++;
         }
-        nuevoDialogo(panelMnsj);
+
+        JDialog panelDialogo = new JDialog(this.pantallaMenu);
+        panelDialogo.setAlwaysOnTop(true);
+        panelDialogo.setLocationRelativeTo(this.pantallaMenu);
+        panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JPanel elementos = new JPanel(new GridLayout(10,1));
+        elementos.add(panelMnsj);
+        panelDialogo.add(panelMnsj);
+
+        panelDialogo.setSize(450, 450);
+
+        panelDialogo.setVisible(true);
     }
 
     public void mostrarMensaje(String mensaje) {
@@ -238,7 +254,9 @@ public class VistaInicio implements IVista {
      */
     public void nuevoDialogo(JPanel panel) {
 
-        JDialog panelDialogo = new JDialog(pantallaJuego.getPantallaJuego());
+        JDialog panelDialogo = new JDialog(this.pantallaJuego.getPantallaJuego());
+        panelDialogo.setAlwaysOnTop(true);
+        panelDialogo.setLocationRelativeTo(this.pantallaJuego.getPantallaJuego());
         panelDialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JButton ok = new JButton("OK");
@@ -250,7 +268,7 @@ public class VistaInicio implements IVista {
         panelDialogo.add(elementos);
 
         panelDialogo.setSize(250, 250);
-        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
+//        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
 
         ok.addActionListener(new ActionListener() {
             @Override
@@ -380,13 +398,17 @@ public class VistaInicio implements IVista {
                 }
                 System.out.println("vista > me voy a conectar a la partida");
                 controlador.conectarse(nombre);
-//                pantallaMenu.setVisible(false);
+                nombreUsuario.setText("");
                 System.out.println("vista > me conecte");
 
             }
         });
     }
 
+
+    /**
+     * Crea el menu para ver el ranking de jugadores.
+     */
     public void verEstadisticas() {
 
         JButton stats = new JButton("Ranking Global");
@@ -397,7 +419,7 @@ public class VistaInicio implements IVista {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-//                controlador.verEstadisticas();
+                controlador.verEstadisticas();
 
             }
         });
