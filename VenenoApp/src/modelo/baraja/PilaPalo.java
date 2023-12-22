@@ -1,6 +1,5 @@
 package modelo.baraja;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

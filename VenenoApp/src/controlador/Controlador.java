@@ -17,7 +17,6 @@ import java.util.List;
 
 public class Controlador implements IControladorRemoto, Serializable {
 
-    private int nroSerie;
     private IVista vista;
     private Jugador jugador;
     private int id;
@@ -25,8 +24,8 @@ public class Controlador implements IControladorRemoto, Serializable {
     private boolean miTurno;
 
 
-    public Controlador(int nroSerie) {
-        this.nroSerie = nroSerie;
+    public Controlador() {
+
     }
 
     public void setVista(IVista vista) {
@@ -119,7 +118,7 @@ public class Controlador implements IControladorRemoto, Serializable {
                 juego.tirarCarta(carta, palo);
             }
             else {
-                vista.mostrarMensaje("Turno del jugador " + juego.obtenerJugadorActual().getNombre() + "!");
+                vista.mostrarMensaje("Turno del jugador " + juego.obtenerJugadorActual().getNombre() + "!\n");
             }
         }
         catch (RemoteException e) {

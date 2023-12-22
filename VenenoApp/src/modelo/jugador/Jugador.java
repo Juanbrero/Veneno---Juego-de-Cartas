@@ -70,7 +70,6 @@ public class Jugador implements Serializable {
     }
 
 
-
     public void recibirCartas(ArrayList<Carta> cartas) {
         this.cartasEnMano = cartas;
         for (Carta carta : cartasEnMano) {

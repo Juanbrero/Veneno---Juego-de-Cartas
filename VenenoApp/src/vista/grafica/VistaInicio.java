@@ -268,7 +268,6 @@ public class VistaInicio implements IVista {
         panelDialogo.add(elementos);
 
         panelDialogo.setSize(250, 250);
-//        panelDialogo.setLocationRelativeTo(pantallaJuego.getPantallaJuego());
 
         ok.addActionListener(new ActionListener() {
             @Override

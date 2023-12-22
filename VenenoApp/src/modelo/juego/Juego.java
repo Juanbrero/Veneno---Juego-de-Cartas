@@ -308,6 +308,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     }
 
+
     private void guardarResultados() throws RemoteException {
 
         if (!resultadosFinales.isEmpty()) {
@@ -354,6 +355,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
     }
 
+
     private Jugador buscarHistorialJugador(Jugador jugador) {
         Object[] datos = serializador.readObjects();
         if (datos != null) {
@@ -377,6 +379,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return null;
     }
 
+
     public ArrayList<Jugador> recuperarDatos() throws RemoteException {
 
         Object[] recuperado = serializador.readObjects();
@@ -391,6 +394,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
         return datos;
     }
+
 
     private void actualizarRegistros(Jugador jugador) throws RemoteException {
         ArrayList<Jugador> modif = new ArrayList<>();
@@ -415,6 +419,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
 
     }
+
 
     private void restablecerSesion() {
 

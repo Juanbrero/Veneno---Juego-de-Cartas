@@ -92,18 +92,6 @@ public class Serializador {
         if (arch.exists()) {
             arch.delete();
         }
-
-
-//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomArch))) {
-//            // Sobrescribir el archivo con un objeto vacío o null
-//            oos.writeObject(null);
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
 }
