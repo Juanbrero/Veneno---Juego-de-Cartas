@@ -6,6 +6,7 @@ import eventos.Evento;
 import modelo.baraja.Carta;
 import modelo.baraja.PilaPalo;
 import modelo.juego.IJuego;
+import modelo.jugador.IJugador;
 import modelo.jugador.Jugador;
 import vista.IVista;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class Controlador implements IControladorRemoto, Serializable {
 
     private IVista vista;
-    private Jugador jugador;
+    private IJugador jugador;
     private int id;
     private IJuego juego;
     private boolean miTurno;
@@ -187,7 +188,8 @@ public class Controlador implements IControladorRemoto, Serializable {
                 vista.reiniciarMano();
             }
 
-            this.jugador.recibirCartas(juego.getJugadores().get(this.id).getCartasEnMano());
+//            this.jugador.recibirCartas(juego.getJugadores().get(this.id).getCartasEnMano());
+            this.jugador = juego.getJugadores().get(this.id);
 
             System.out.println("controlador > soy " + jugador.getNombre());
 

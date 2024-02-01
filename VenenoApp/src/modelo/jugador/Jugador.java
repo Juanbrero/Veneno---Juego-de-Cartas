@@ -5,7 +5,7 @@ import modelo.baraja.Carta;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Jugador implements Serializable {
+public class Jugador implements IJugador {
 
     private String nombre;
     private int id;
@@ -21,6 +21,7 @@ public class Jugador implements Serializable {
         this.id = id;
     }
 
+    @Override
     public double getRatio() {
         return ratio;
     }
@@ -29,6 +30,7 @@ public class Jugador implements Serializable {
         this.ratio = ratio;
     }
 
+    @Override
     public int getPartidasJugadas() {
         return partidasJugadas;
     }
@@ -37,22 +39,27 @@ public class Jugador implements Serializable {
         this.partidasJugadas = partidasJugadas;
     }
 
+    @Override
     public ArrayList<Carta> getCartasEnMano() {
         return cartasEnMano;
     }
 
+    @Override
     public String getNombre() {
         return nombre;
     }
 
+    @Override
     public int getId() {
         return this.id;
     }
 
+    @Override
     public int getPuntos() {
         return puntosTotales;
     }
 
+    @Override
     public int getPuntosALevantar() {
         return puntosALevantar;
     }
@@ -61,6 +68,7 @@ public class Jugador implements Serializable {
         this.puntosALevantar = puntosALevantar;
     }
 
+    @Override
     public boolean isMiTurno() {
         return miTurno;
     }
