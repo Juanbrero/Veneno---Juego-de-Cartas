@@ -66,7 +66,7 @@ public class AppCliente {
 
 
         Controlador controlador = new Controlador();
-        System.out.println("cliente > id controlador: " + controlador);
+        System.out.println("cliente > id controlador: " + controlador.getId());
 
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         if(modo.equals("1")) {

@@ -2,6 +2,7 @@ package vista.consola;
 
 import controlador.Controlador;
 import modelo.baraja.Carta;
+import modelo.jugador.IJugador;
 import vista.IVista;
 
 import javax.swing.*;
@@ -71,6 +72,7 @@ public class VistaConsola extends JFrame implements IVista {
     public JTextArea getAreaTexto() {
         return areaTexto;
     }
+
 
     @Override
     public void iniciar() {

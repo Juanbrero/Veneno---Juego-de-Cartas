@@ -2,6 +2,7 @@ package vista.grafica;
 
 import controlador.Controlador;
 import modelo.baraja.Carta;
+import modelo.jugador.IJugador;
 import vista.IVista;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class VistaInicio implements IVista {
@@ -27,6 +29,7 @@ public class VistaInicio implements IVista {
     private JRadioButton op3;
     private JTextField nombreUsuario;
     private String nombre;
+    private IJugador jugador;
     JDialog colaEspera;
 
 
@@ -94,6 +97,7 @@ public class VistaInicio implements IVista {
 
         colaEspera.setVisible(true);
 
+//        System.out.println("vista > " + jugador.getNombre() + " en cola de espera");
     }
 
 
@@ -102,13 +106,13 @@ public class VistaInicio implements IVista {
      */
     public void iniciarPartida() {
         if (colaEspera != null) {
-            System.out.println("vista > en cola de espera");
-            colaEspera.dispose();
+            this.colaEspera.dispose();
         }
-        pantallaMenu.setVisible(false);
+//        System.out.println("vista > soy " + jugador.getNombre() + " id: " + jugador.getId());
         System.out.println("vista > arrancamossss");
 
-        pantallaJuego = new VistaGrafica(nombre, this);
+        this.pantallaMenu.setVisible(false);
+        pantallaJuego = new VistaGrafica(jugador, this);
 
     }
 
@@ -120,6 +124,7 @@ public class VistaInicio implements IVista {
     public void generarCartas(ArrayList<Carta> cartas) {
 
         this.pantallaJuego.generarCartas(cartas);
+
     }
 
     /**
@@ -395,10 +400,15 @@ public class VistaInicio implements IVista {
                 if (nombre.isEmpty()) {
                     nombre = "AnonPlayer" + this.hashCode();
                 }
-                System.out.println("vista > me voy a conectar a la partida");
-                controlador.conectarse(nombre);
+                System.out.println("vista > me voy a conectar a la partida como " + nombre);
                 nombreUsuario.setText("");
-                System.out.println("vista > me conecte");
+                jugador = controlador.conectarse(nombre);
+                System.out.println("vista > me conecte como " + jugador.getNombre());
+                try {
+                    controlador.inicio();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
 
             }
         });

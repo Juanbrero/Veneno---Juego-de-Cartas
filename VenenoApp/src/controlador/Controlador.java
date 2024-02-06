@@ -29,6 +29,10 @@ public class Controlador implements IControladorRemoto, Serializable {
 
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setVista(IVista vista) {
         this.vista = vista;
     }
@@ -88,23 +92,23 @@ public class Controlador implements IControladorRemoto, Serializable {
      * Conecta el controlador al modelo. Guarda la referencia a la instancia de jugador creada en el modelo.
      * @param nombre
      */
-    public void conectarse(String nombre) {
+    public IJugador conectarse(String nombre) {
 
         try {
-            System.out.println("controlador > me voy a conectar como jugador " + nombre);
-            this.jugador = juego.agregarJugador(nombre);
-            this.id = jugador.getId();
-            System.out.println("controlador > id this.jugador = " + jugador);
-            System.out.println("controlar > soy " + jugador.getNombre());
-            if(juego.getJugadoresConectados() == juego.getCantidadJugadores()) {
-                System.out.println("controlador > jugar ronda");
-                juego.iniciarJuego();
-            }
+            this.id = juego.getJugadoresConectados();
+            System.out.println("controlador > me voy a conectar como jugador " + nombre + " id: " + this.id);
+            juego.agregarJugador(nombre);
+            System.out.println("controlador > soy " + jugador.getNombre() + ", id: " + jugador.getId());
         }
         catch (RemoteException e) {
             e.printStackTrace();
         }
 
+        return this.jugador;
+    }
+
+    public void inicio() throws RemoteException {
+        juego.iniciarJuego();
     }
 
 
@@ -156,10 +160,11 @@ public class Controlador implements IControladorRemoto, Serializable {
     private void updateJugadorConectado() {
 
         try {
+            this.jugador = juego.getJugadores().get(this.id);
+            System.out.println("controlador > ya me conecte como " + jugador.getNombre());
             if (this.juego.getJugadoresConectados() < this.juego.getCantidadJugadores()) {
                 /* Si faltan jugadores por conectarse agrego al jugador actual a una cola de espera */
-                System.out.println("controlador > en cola de espera");
-                System.out.println("controlador > " + this.juego.getJugadoresConectados() + " / "+ this.juego.getCantidadJugadores());
+                System.out.println("controlador > " + this.jugador.getNombre() + " en cola de espera... " + this.juego.getJugadoresConectados() + " / "+ this.juego.getCantidadJugadores());
 
                 /* Solo agrego a la cola de espera cuando le dan al boton start.*/
                 if((this.juego.getJugadoresConectados() - 1 ) == this.id){
@@ -167,6 +172,7 @@ public class Controlador implements IControladorRemoto, Serializable {
                     vista.colaDeEspera(this.juego.getJugadoresConectados(), this.juego.getCantidadJugadores());
                 }
             }
+
         }
         catch (RemoteException e) {
             e.printStackTrace();
@@ -194,7 +200,7 @@ public class Controlador implements IControladorRemoto, Serializable {
             System.out.println("controlador > soy " + jugador.getNombre());
 
             System.out.println("el jugador tiene " + this.jugador.getCartasEnMano().size() + " cartas");
-            System.out.println("controlador > se reparten las cartas");
+            System.out.println("controlador > se generan las cartas graficas");
 
             vista.generarCartas(this.jugador.getCartasEnMano());
 

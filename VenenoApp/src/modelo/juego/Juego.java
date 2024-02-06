@@ -106,20 +106,24 @@ public class Juego extends ObservableRemoto implements IJuego {
      * @return
      * @throws RemoteException
      */
-    public Jugador agregarJugador(String nombre) throws RemoteException {
+    public void agregarJugador(String nombre) throws RemoteException {
 
         /* Crea un nuevo jugador y lo agrega a la lista,
          * incrementa la cantidad de jugadores conectados.
         */
+        System.out.println("juego > cantidad jugadores actuales = " + jugadoresConectados);
         Jugador nuevoJugador = new Jugador(nombre, jugadoresConectados);
         this.jugadores.add(nuevoJugador);
         this.jugadoresConectados++;
-        System.out.println("juego > cree el jugador " + nuevoJugador.getNombre());
-        System.out.println("juego > id jugador creado = " + nuevoJugador);
+        System.out.println("juego > cree el jugador " + nuevoJugador.getNombre() + " id: " + nuevoJugador.getId());
+        System.out.println("juego > cantidad jugadores actualizados = " + jugadoresConectados);
 
         notificarObservadores(Evento.JUGADOR_CONECTADO);
 
-        return nuevoJugador;
+//        if(jugadoresConectados == cantidadJugadores) {
+//            System.out.println("juego > jugar primer ronda");
+//            iniciarJuego();
+//        }
     }
 
     /**
@@ -128,10 +132,11 @@ public class Juego extends ObservableRemoto implements IJuego {
      */
     public void iniciarJuego() throws RemoteException {
 
-        notificarObservadores(Evento.START);
-        mazo.mezclar();
-        jugarRonda();
-
+        if(jugadoresConectados == cantidadJugadores) {
+            notificarObservadores(Evento.START);
+            mazo.mezclar();
+            jugarRonda();
+        }
     }
 
 

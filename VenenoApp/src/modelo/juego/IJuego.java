@@ -30,7 +30,7 @@ public interface IJuego extends IObservableRemoto {
     List<Jugador> getResultadosFinales() throws RemoteException;
 
 
-    Jugador agregarJugador(String nombre) throws RemoteException;
+    void agregarJugador(String nombre) throws RemoteException;
 
     void iniciarJuego() throws RemoteException;
 

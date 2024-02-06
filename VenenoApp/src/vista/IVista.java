@@ -1,11 +1,12 @@
 package vista;
 
 import modelo.baraja.Carta;
+import modelo.jugador.IJugador;
 
 import java.util.ArrayList;
 
 public interface IVista {
-    
+
     void iniciar();
 
     void colaDeEspera(int conectados, int jugadores);

@@ -1,6 +1,7 @@
 package vista.grafica;
 
 import modelo.baraja.Carta;
+import modelo.jugador.IJugador;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -15,7 +16,7 @@ public class VistaGrafica{
 
     private VistaInicio pantallaMenu;
     private JFrame pantallaJuego;
-    private String nombre;
+    private IJugador jugador;
     private JPanel panelPrincipal;
     private JPanel pilasEnMesa;
     private JPanel pilas;
@@ -49,9 +50,9 @@ public class VistaGrafica{
     private JLabel jugador4;
 
 
-    public VistaGrafica(String nombreJugador, VistaInicio pantallaMenu) {
+    public VistaGrafica(IJugador jugador, VistaInicio pantallaMenu) {
         this.pantallaMenu = pantallaMenu;
-        this.nombre = nombreJugador;
+        this.jugador = jugador;
 
         pantallaJuego = new JFrame("Veneno - Juego de cartas");
         pantallaJuego.setSize(850, 680);
@@ -265,7 +266,7 @@ public class VistaGrafica{
         panelInfoJugador = new JPanel(new GridLayout(3,1,5,12));
         mano.add(panelInfoJugador);
 
-        panelInfoJugador.add(new JLabel("Jugador: " + nombre));
+        panelInfoJugador.add(new JLabel("Jugador: " + jugador.getNombre()));
         panelInfoJugador.add(panelPuntos);
     }
 
