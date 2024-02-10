@@ -3,12 +3,13 @@ package modelo.baraja;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PilaPalo implements Serializable {
+public class PilaPalo implements IPilaPalo {
 
     private static final int SUMA_MINIMA = 13;
     private ArrayList<ICarta> cartasEnMesa = new ArrayList<>();
     private Palo palo;
     private double sumaValores = 0;
+    private boolean reiniciar = false;
 
 
     public PilaPalo(Palo palo) {
@@ -16,10 +17,12 @@ public class PilaPalo implements Serializable {
 
     }
 
+    @Override
     public Palo getPalo() {
         return palo;
     }
 
+    @Override
     public double getSumaValores() {
         return sumaValores;
     }
@@ -32,6 +35,16 @@ public class PilaPalo implements Serializable {
         return SUMA_MINIMA;
     }
 
+
+    public boolean isReiniciar() {
+        return reiniciar;
+    }
+
+    public void setReiniciar(boolean reiniciar) {
+        this.reiniciar = reiniciar;
+    }
+
+    @Override
     public ArrayList<ICarta> getCartasEnMesa() {
         return cartasEnMesa;
     }

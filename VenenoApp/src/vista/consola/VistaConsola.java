@@ -3,6 +3,7 @@ package vista.consola;
 import controlador.Controlador;
 import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
+import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;
 import modelo.jugador.IJugador;
 import vista.IVista;
@@ -76,10 +77,6 @@ public class VistaConsola extends JFrame implements IVista {
     }
 
 
-    @Override
-    public Palo getEnvenenado() {
-        return null;
-    }
 
     @Override
     public void iniciar() {
@@ -205,6 +202,16 @@ public class VistaConsola extends JFrame implements IVista {
     }
 
     @Override
+    public void agregarCartaEnMesa(IPilaPalo pila) {
+
+    }
+
+    @Override
+    public void reiniciarPila(IPilaPalo pilaAReiniciar) {
+
+    }
+
+
     public void agregarCartaEnMesa(String palo, double valor) {
 
         switch (palo) {
@@ -220,7 +227,7 @@ public class VistaConsola extends JFrame implements IVista {
         }
     }
 
-    @Override
+
     public void reiniciarPila(String pilaAReiniciar) {
 
         if(pilaAReiniciar.equals("ORO")) {

@@ -1,6 +1,8 @@
 package vista.grafica;
 
 import modelo.baraja.ICarta;
+import modelo.baraja.IPilaPalo;
+import modelo.baraja.Palo;
 import modelo.jugador.IJugador;
 
 import javax.swing.*;
@@ -9,6 +11,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VistaGrafica{
 
@@ -25,9 +29,10 @@ public class VistaGrafica{
     private JPanel mano;
     private JPanel[] cartas = new JPanel[4];
     private JPanel vistaCarta;
-    private double sumaValorPilaOro = 0;
-    private double sumaValorPilaBasto = 0;
-    private double sumaValorPilaEspada = 0;
+//    private double sumaValorPilaOro = 0;
+//    private double sumaValorPilaBasto = 0;
+//    private double sumaValorPilaEspada = 0;
+    private Map<Palo,JLabel> acumulado = new HashMap<>();
     private JLabel sumOro = new JLabel("Acumulado: 0");
     private JLabel sumBasto = new JLabel("Acumulado: 0");
     private JLabel sumEspada = new JLabel("Acumulado: 0");
@@ -88,26 +93,28 @@ public class VistaGrafica{
 
     /**
      * Agrega la carta tirada a la pila correspondiente de la mesa y suma el valor acumulado.
-     * @param palo
-     * @param valor
+     * @param pila
      */
-    public void agregarCartaEnMesa(String palo, double valor) {
+    public void agregarCartaEnMesa(IPilaPalo pila) {
 
-        System.out.println("vista > pila a actualizar: " + palo);
-        switch (palo) {
-            case "ORO" -> {
-                sumaValorPilaOro += valor;
-                sumOro.setText("Acumulado: " + sumaValorPilaOro);
-            }
-            case "BASTO" -> {
-                sumaValorPilaBasto += valor;
-                sumBasto.setText("Acumulado: " + sumaValorPilaBasto);
-            }
-            case "ESPADA" -> {
-                sumaValorPilaEspada += valor;
-                sumEspada.setText("Acumulado: " + sumaValorPilaEspada);
-            }
-        }
+        System.out.println("vista > pila a actualizar: " + pila.getPalo());
+
+        acumulado.get(pila.getPalo()).setText("Acumulado: " + pila.getSumaValores());
+
+//        switch (palo.toString()) {
+//            case "ORO" -> {
+//                sumaValorPilaOro += carta.getValor();
+//                sumOro.setText("Acumulado: " + sumaValorPilaOro);
+//            }
+//            case "BASTO" -> {
+//                sumaValorPilaBasto += carta.getValor();
+//                sumBasto.setText("Acumulado: " + sumaValorPilaBasto);
+//            }
+//            case "ESPADA" -> {
+//                sumaValorPilaEspada += carta.getValor();
+//                sumEspada.setText("Acumulado: " + sumaValorPilaEspada);
+//            }
+//        }
     }
 
 
@@ -115,24 +122,26 @@ public class VistaGrafica{
      *
      * @param pilaAReiniciar
      */
-    public void reiniciarPila(String pilaAReiniciar) {
+    public void reiniciarPila(IPilaPalo pilaAReiniciar) {
 
         System.out.println("vista > pila a reiniciar: " + pilaAReiniciar);
-        if(pilaAReiniciar.equals("ORO")) {
-            sumaValorPilaOro = 0;
-            sumOro.setText("Acumulado: 0");
 
-        }
-        else if (pilaAReiniciar.equals("BASTO")) {
-            sumaValorPilaBasto = 0;
-            sumBasto.setText("Acumulado: 0");
-
-        }
-        else {
-            sumaValorPilaEspada = 0;
-            sumEspada.setText("Acumulado: 0");
-
-        }
+        acumulado.get(pilaAReiniciar.getPalo()).setText("Acumulado: 0");
+//        if(pilaAReiniciar.equals("ORO")) {
+//            sumaValorPilaOro = 0;
+//            sumOro.setText("Acumulado: 0");
+//
+//        }
+//        else if (pilaAReiniciar.equals("BASTO")) {
+//            sumaValorPilaBasto = 0;
+//            sumBasto.setText("Acumulado: 0");
+//
+//        }
+//        else {
+//            sumaValorPilaEspada = 0;
+//            sumEspada.setText("Acumulado: 0");
+//
+//        }
     }
 
 
@@ -193,6 +202,10 @@ public class VistaGrafica{
         pilas.add(pilaBasto);
         pilas.add(pilaOro);
         pilas.add(pilaEspada);
+
+        acumulado.put(Palo.BASTO,sumBasto);
+        acumulado.put(Palo.ORO,sumOro);
+        acumulado.put(Palo.ESPADA,sumEspada);
     }
 
 
@@ -305,9 +318,9 @@ public class VistaGrafica{
 
     public void restablecerSesion() {
 
-        reiniciarPila("BASTO");
-        reiniciarPila("ORO");
-        reiniciarPila("ESPADA");
+//        reiniciarPila("BASTO");
+//        reiniciarPila("ORO");
+//        reiniciarPila("ESPADA");
         puntos = 0;
         panelPuntos.setText("Puntos: " + puntos);
         pantallaJuego.repaint();

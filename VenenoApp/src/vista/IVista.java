@@ -2,6 +2,7 @@ package vista;
 
 import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
+import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;
 import modelo.jugador.IJugador;
 
@@ -28,9 +29,9 @@ public interface IVista {
 
     void envenenar();
 
-    void agregarCartaEnMesa(String string, double valor);
+    void agregarCartaEnMesa(IPilaPalo pila);
 
-    void reiniciarPila(String pilaAReiniciar);
+    void reiniciarPila(IPilaPalo pilaAReiniciar);
 
     void levantarCartas(int puntos);
 

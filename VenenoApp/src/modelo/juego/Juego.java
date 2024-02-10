@@ -86,7 +86,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return reiniciarPila;
     }
 
-    public PilaPalo getPilaActualizada() throws RemoteException {
+    public IPilaPalo getPilaActualizada() throws RemoteException {
         return pilaActualizada;
     }
 
@@ -189,8 +189,12 @@ public class Juego extends ObservableRemoto implements IJuego {
             pilaActualizada = pilas.get(pila);
 
             if(verificarSumaPila(pilas.get(pila),jugadorActual)) {
-                reiniciarPila = true;
+//                reiniciarPila = true;
+                pilas.get(pila).setReiniciar(true);
                 pilas.get(pila).reinicarPila();
+            }
+            else {
+                pilas.get(pila).setReiniciar(false);
             }
 
             System.out.println("juego > pila actualizada: " + pilaActualizada.getPalo().toString());

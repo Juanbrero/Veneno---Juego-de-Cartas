@@ -1,10 +1,7 @@
 package modelo.juego;
 
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
-import modelo.baraja.Carta;
-import modelo.baraja.ICarta;
-import modelo.baraja.Palo;
-import modelo.baraja.PilaPalo;
+import modelo.baraja.*;
 import modelo.jugador.Jugador;
 
 import java.rmi.RemoteException;
@@ -27,7 +24,7 @@ public interface IJuego extends IObservableRemoto {
 
     boolean isReiniciarPila() throws RemoteException;
 
-    PilaPalo getPilaActualizada() throws RemoteException;
+    IPilaPalo getPilaActualizada() throws RemoteException;
 
     List<Jugador> getResultadosFinales() throws RemoteException;
 

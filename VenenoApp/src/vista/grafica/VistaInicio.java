@@ -3,6 +3,7 @@ package vista.grafica;
 import controlador.Controlador;
 import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
+import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;
 import modelo.jugador.IJugador;
 import vista.IVista;
@@ -191,12 +192,12 @@ public class VistaInicio implements IVista {
     }
 
 
-    public void agregarCartaEnMesa(String palo, double valor) {
-        pantallaJuego.agregarCartaEnMesa(palo, valor);
+    public void agregarCartaEnMesa(IPilaPalo pila) {
+        pantallaJuego.agregarCartaEnMesa(pila);
     }
 
 
-    public void reiniciarPila(String pilaAReiniciar) {
+    public void reiniciarPila(IPilaPalo pilaAReiniciar) {
 
         pantallaJuego.reiniciarPila(pilaAReiniciar);
     }

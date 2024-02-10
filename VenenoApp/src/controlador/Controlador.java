@@ -4,6 +4,7 @@ import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import eventos.Evento;
 import modelo.baraja.ICarta;
+import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;
 import modelo.baraja.PilaPalo;
 import modelo.juego.IJuego;
@@ -63,7 +64,7 @@ public class Controlador implements IControladorRemoto, Serializable {
                     updateTurno();
                     break;
                 case CARTA_JUGADA:
-                    updateCartaJugada(juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaActualizada());
+                    updateCartaJugada(juego.getCartaJugadaTurnoActual(), juego.getPilaActualizada());
                     break;
                 case VENENO:
                     updateSeleccionarPila();
@@ -252,10 +253,9 @@ public class Controlador implements IControladorRemoto, Serializable {
      * Informa sobre la carta jugada en el turno actual sacandola de la mano.
      * Determina si se debe agregar la carta a la mesa o se debe reiniciar la y sumar puntos.
      * @param carta
-     * @param reiniciarPila
      * @param pilaActualizada
      */
-    private void updateCartaJugada(ICarta carta, boolean reiniciarPila, PilaPalo pilaActualizada) {
+    private void updateCartaJugada(ICarta carta, IPilaPalo pilaActualizada) {
 
         try {
             System.out.println("controlador > pila a actualizar: " + pilaActualizada.getPalo().toString());
@@ -266,18 +266,18 @@ public class Controlador implements IControladorRemoto, Serializable {
 
                 vista.tirarCarta(carta);
                 /* Si al tirar la carta me toca levantar la pila de la mesa */
-                if (reiniciarPila) {
+                if (pilaActualizada.isReiniciar()) {
                     System.out.println("controlador > updateCartaJugada: " + this.jugador.getPuntosALevantar() + " puntos ");
                     this.vista.levantarCartas(this.jugador.getPuntosALevantar());
                 }
             }
             /* Actualizacion para todos los jugadores sobre la pila a actualizar.*/
-            if (!reiniciarPila) {
+            if (pilaActualizada.isReiniciar()) {
 
-                vista.agregarCartaEnMesa(pilaActualizada.getPalo().toString(),carta.getValor());
+                vista.reiniciarPila(pilaActualizada);
             }
             else {
-                vista.reiniciarPila(pilaActualizada.getPalo().toString());
+                vista.agregarCartaEnMesa(pilaActualizada);
             }
         }
         catch (RemoteException e) {
