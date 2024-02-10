@@ -1,6 +1,6 @@
 package modelo.jugador;
 
-import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public interface IJugador extends Serializable {
 
     int getPartidasJugadas();
 
-    ArrayList<Carta> getCartasEnMano();
+    ArrayList<ICarta> getCartasEnMano();
 
     String getNombre();
 

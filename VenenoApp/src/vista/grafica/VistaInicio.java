@@ -2,6 +2,8 @@ package vista.grafica;
 
 import controlador.Controlador;
 import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
+import modelo.baraja.Palo;
 import modelo.jugador.IJugador;
 import vista.IVista;
 
@@ -97,7 +99,6 @@ public class VistaInicio implements IVista {
 
         colaEspera.setVisible(true);
 
-//        System.out.println("vista > " + jugador.getNombre() + " en cola de espera");
     }
 
 
@@ -108,8 +109,8 @@ public class VistaInicio implements IVista {
         if (colaEspera != null) {
             this.colaEspera.dispose();
         }
-//        System.out.println("vista > soy " + jugador.getNombre() + " id: " + jugador.getId());
-        System.out.println("vista > arrancamossss");
+
+        System.out.println("vista > arranca");
 
         this.pantallaMenu.setVisible(false);
         pantallaJuego = new VistaGrafica(jugador, this);
@@ -121,7 +122,7 @@ public class VistaInicio implements IVista {
      * Llama al metodo para crear las vistas de cada carta.
      * @param cartas
      */
-    public void generarCartas(ArrayList<Carta> cartas) {
+    public void generarCartas(ArrayList<ICarta> cartas) {
 
         this.pantallaJuego.generarCartas(cartas);
 
@@ -141,8 +142,52 @@ public class VistaInicio implements IVista {
     }
 
 
-    public void tirarCarta(int cartaJugada) {
+    public void tirarCarta(ICarta cartaJugada) {
         pantallaJuego.tirarCarta(cartaJugada);
+    }
+
+
+    public void envenenar() {
+
+        JPanel veneno = new JPanel(new GridLayout(2,1));
+        JLabel mensaje = new JLabel("Veneno! - Selecciona el pilon de cartas que queres envenenar");
+        JPanel opciones = new JPanel(new FlowLayout());
+
+        veneno.add(mensaje);
+        veneno.add(opciones);
+
+
+        JButton basto = new JButton("Basto");
+        opciones.add(basto);
+        basto.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                controlador.envenenar(Palo.BASTO);
+            }
+        });
+
+        JButton oro = new JButton("Oro");
+        opciones.add(oro);
+        oro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controlador.envenenar(Palo.ORO);
+            }
+        });
+
+        JButton espada = new JButton("Espada");
+        opciones.add(espada);
+        espada.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controlador.envenenar(Palo.ESPADA);
+            }
+        });
+
+
+        nuevoDialogo(veneno);
+
     }
 
 
@@ -241,6 +286,7 @@ public class VistaInicio implements IVista {
 
         panelDialogo.setVisible(true);
     }
+
 
     public void mostrarMensaje(String mensaje) {
 

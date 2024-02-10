@@ -2,6 +2,8 @@ package vista.consola;
 
 import controlador.Controlador;
 import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
+import modelo.baraja.Palo;
 import modelo.jugador.IJugador;
 import vista.IVista;
 
@@ -24,7 +26,7 @@ public class VistaConsola extends JFrame implements IVista {
     private int puntos = 0;
     private JTextArea areaTexto;
     private JTextField inputAccion;
-    private ArrayList<Carta> mano = new ArrayList<>();
+    private ArrayList<ICarta> mano = new ArrayList<>();
 
 
     public VistaConsola(Controlador controlador) {
@@ -43,12 +45,12 @@ public class VistaConsola extends JFrame implements IVista {
 
         inputAccion = new JTextField();
         JButton enviarButton = new JButton("Enviar");
-        enviarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SeleccionarPila();
-            }
-        });
+//        enviarButton.addActionListener(new ActionListener() {
+//            @Override
+////            public void actionPerformed(ActionEvent e) {
+////                SeleccionarPila();
+////            }
+//        });
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -75,6 +77,11 @@ public class VistaConsola extends JFrame implements IVista {
 
 
     @Override
+    public Palo getEnvenenado() {
+        return null;
+    }
+
+    @Override
     public void iniciar() {
         setVisible(false);
         this.inicio.getPantallaMenu().setVisible(true);
@@ -91,8 +98,9 @@ public class VistaConsola extends JFrame implements IVista {
         areaTexto.append("Inicia la partida!\n");
     }
 
+
     @Override
-    public void generarCartas(ArrayList<Carta> cartas) {
+    public void generarCartas(ArrayList<ICarta> cartas) {
         mano = cartas;
         areaTexto.append("Tus cartas son: ");
         for (int i = 0; i < mano.size(); i++) {
@@ -135,60 +143,65 @@ public class VistaConsola extends JFrame implements IVista {
     }
 
 
-    private void SeleccionarPila() {
-        String mensaje = inputAccion.getText();
+//    private void SeleccionarPila() {
+//        String mensaje = inputAccion.getText();
+//
+//        if (!mensaje.isEmpty()) {
+//
+//            areaTexto.append(inicio.getNombre() + ": " + mensaje + "\n");
+//            inputAccion.setText("");
+//            if (!envenenar) {   //Si es false el input corresponde a la seleccion de la carta a tirar
+//
+//                if(Character.isDigit(mensaje.charAt(0))){
+//
+//                    op = Integer.parseInt(mensaje);
+//                }
+//
+//                if (op > 0 && op < 5 && mano.get(op - 1).isEnMano()) { //es una carta valida para jugar
+//                    if (mano.get(op - 1).isCopa()) {
+//                        mostrarMensaje("Selecciona la pila a envenenar:\n\t[B]Basto\t[O]Oro\t[E]Espada\n");
+//                        envenenar = true;
+//
+//                    } else {
+//                        controlador.tirarCarta(op - 1, mano.get(op - 1).getPalo().toString());
+//                        envenenar = false;
+//                    }
+//                }
+//                else {
+//                    areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
+//                }
+//            }
+//            else {  //si es true entonces el input corresponde a la pila a envenenar.
+//
+//                switch (mensaje.toUpperCase()) {
+//                    case "B":
+//                        controlador.tirarCarta(op - 1, "BASTO");
+//                        break;
+//                    case "O":
+//                        controlador.tirarCarta(op - 1, "ORO");
+//                        break;
+//                    case "E":
+//                        controlador.tirarCarta(op - 1, "ESPADA");
+//                        break;
+//                    default:
+//                        areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
+//                        break;
+//                }
+//                envenenar = false;
+//
+//            }
+//        }
+//
+//    }
 
-        if (!mensaje.isEmpty()) {
-
-            areaTexto.append(inicio.getNombre() + ": " + mensaje + "\n");
-            inputAccion.setText("");
-            if (!envenenar) {   //Si es false el input corresponde a la seleccion de la carta a tirar
-
-                if(Character.isDigit(mensaje.charAt(0))){
-
-                    op = Integer.parseInt(mensaje);
-                }
-
-                if (op > 0 && op < 5 && mano.get(op - 1).isEnMano()) { //es una carta valida para jugar
-                    if (mano.get(op - 1).isCopa()) {
-                        mostrarMensaje("Selecciona la pila a envenenar:\n\t[B]Basto\t[O]Oro\t[E]Espada\n");
-                        envenenar = true;
-
-                    } else {
-                        controlador.tirarCarta(op - 1, mano.get(op - 1).getPalo().toString());
-                        envenenar = false;
-                    }
-                }
-                else {
-                    areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
-                }
-            }
-            else {  //si es true entonces el input corresponde a la pila a envenenar.
-
-                switch (mensaje.toUpperCase()) {
-                    case "B":
-                        controlador.tirarCarta(op - 1, "BASTO");
-                        break;
-                    case "O":
-                        controlador.tirarCarta(op - 1, "ORO");
-                        break;
-                    case "E":
-                        controlador.tirarCarta(op - 1, "ESPADA");
-                        break;
-                    default:
-                        areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
-                        break;
-                }
-                envenenar = false;
-
-            }
-        }
-
+    @Override
+    public void tirarCarta(ICarta cartaJugada) {
+//        this.mano.get(cartaJugada).setEnMano(false);
     }
 
     @Override
-    public void tirarCarta(int cartaJugada) {
-        this.mano.get(cartaJugada).setEnMano(false);
+    public void envenenar() {
+
     }
 
     @Override

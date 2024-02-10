@@ -1,13 +1,11 @@
 package vista.grafica;
 
-import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
 import modelo.jugador.IJugador;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -77,67 +75,13 @@ public class VistaGrafica{
 
     /*--------------------- Metodos de la clase ---------------------*/
 
-    /**
-     * Informa al controlador de la carta a tirar. Verifica si la carta es de copa, en dicho caso pide seleccionar
-     * la pila de cartas a envenenar.
-     * @param indice
-     * @param palo
-     */
-    public void seleccionarPila(int indice, String palo) {
-
-        if (palo.equals("COPA")) {
-
-            JPanel veneno = new JPanel(new GridLayout(2,1));
-            JLabel mensaje = new JLabel("Veneno! - Selecciona el pilon de cartas que queres envenenar");
-            JPanel opciones = new JPanel(new FlowLayout());
-
-            veneno.add(mensaje);
-            veneno.add(opciones);
-
-
-            JButton basto = new JButton("Basto");
-            opciones.add(basto);
-            basto.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    pantallaMenu.getControlador().tirarCarta(indice, "BASTO");
-                }
-            });
-
-            JButton oro = new JButton("Oro");
-            opciones.add(oro);
-            oro.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    pantallaMenu.getControlador().tirarCarta(indice,"ORO");
-                }
-            });
-
-            JButton espada = new JButton("Espada");
-            opciones.add(espada);
-            espada.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    pantallaMenu.getControlador().tirarCarta(indice,"ESPADA");
-                }
-            });
-
-
-            pantallaMenu.nuevoDialogo(veneno);
-
-        }
-        else {
-            pantallaMenu.getControlador().tirarCarta(indice, palo);
-        }
-    }
-
 
     /**
      * Baja logica de la carta tirada.
      * @param cartaJugada
      */
-    public void tirarCarta(int cartaJugada) {
-        cartas[cartaJugada].setVisible(false);
+    public void tirarCarta(ICarta cartaJugada) {
+        cartas[cartaJugada.getId()].setVisible(false);
 
     }
 
@@ -309,9 +253,9 @@ public class VistaGrafica{
      * Crea las vistas de las cartas del jugador.
      * @param cartasmano
      */
-    public void generarCartas(ArrayList<Carta> cartasmano) {
+    public void generarCartas(ArrayList<ICarta> cartasmano) {
 
-        for (Carta c : cartasmano) {
+        for (ICarta c : cartasmano) {
 
             vistaCarta = new JPanel(new GridLayout(3,1));
             vistaCarta.setBorder(new LineBorder(Color.BLACK, 3));
@@ -335,7 +279,8 @@ public class VistaGrafica{
                 @Override
                 public void mouseClicked(MouseEvent e) {
 
-                    seleccionarPila(cartasmano.indexOf(c), c.getPalo().toString());
+                    pantallaMenu.getControlador().tirarCarta(c);
+
                 }
             });
 

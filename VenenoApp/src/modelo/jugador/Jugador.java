@@ -1,8 +1,8 @@
 package modelo.jugador;
 
 import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Jugador implements IJugador {
@@ -12,7 +12,7 @@ public class Jugador implements IJugador {
     private int puntosTotales = 0;
     private int puntosALevantar = 0;
     private boolean miTurno = false;
-    private ArrayList<Carta> cartasEnMano = new ArrayList<>();
+    private ArrayList<ICarta> cartasEnMano = new ArrayList<>();
     private int partidasJugadas = 0;
     private double ratio;
 
@@ -40,7 +40,7 @@ public class Jugador implements IJugador {
     }
 
     @Override
-    public ArrayList<Carta> getCartasEnMano() {
+    public ArrayList<ICarta> getCartasEnMano() {
         return cartasEnMano;
     }
 
@@ -78,17 +78,27 @@ public class Jugador implements IJugador {
     }
 
 
-    public void recibirCartas(ArrayList<Carta> cartas) {
+    public void recibirCartas(ArrayList<ICarta> cartas) {
         this.cartasEnMano = cartas;
-        for (Carta carta : cartasEnMano) {
+        for (ICarta carta : cartasEnMano) {
             carta.setEnMano(true);
         }
     }
 
-    public void tirarCarta(int indiceCarta) {
+    public void tirarCarta(ICarta carta) {
 
-        cartasEnMano.get(indiceCarta).setEnMano(false);
-        cartasEnMano.set(indiceCarta,null);
+//        for (int i = 0; i < cartasEnMano.size(); i++) {
+
+//            if (cartasEnMano.get(i).getNro() == carta.getNro() && cartasEnMano.get(i).getPalo() == carta.getPalo()) {
+//
+//                cartasEnMano.get(i).setEnMano(false);
+//                cartasEnMano.set(i,null);
+//            }
+
+            cartasEnMano.get(carta.getId()).setEnMano(false);
+            cartasEnMano.set(carta.getId(), null);
+
+//        }
 
     }
 

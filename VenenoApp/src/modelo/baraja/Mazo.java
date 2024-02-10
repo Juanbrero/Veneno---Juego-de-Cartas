@@ -5,7 +5,7 @@ import java.util.Collections;
 
 public class Mazo {
 
-    private ArrayList<Carta> cartasEnMazo = new ArrayList<>();
+    private ArrayList<ICarta> cartasEnMazo = new ArrayList<>();
     private static final int MAX_CARTAS = 48;
     private int cantidadCartasEnMazo = 0;
 
@@ -36,15 +36,16 @@ public class Mazo {
         Collections.shuffle(cartasEnMazo);
     }
 
-    public ArrayList<Carta> repartir() {
+    public ArrayList<ICarta> repartir() {
 
         int indice = 0;
-        ArrayList<Carta> cartas = new ArrayList<>();
+        ArrayList<ICarta> cartas = new ArrayList<>();
         while (indice < MAX_CARTAS && cantidadCartasEnMazo > 0 && cartas.size() < 4) {
 
             if (cartasEnMazo.get(indice).isEnMazo()) {
 
                 cartas.add(cartasEnMazo.get(indice));
+                cartasEnMazo.get(indice).setId(cartas.size() - 1);
                 cartasEnMazo.get(indice).setEnMazo(false);
                 this.cantidadCartasEnMazo--;
             }
@@ -59,6 +60,7 @@ public class Mazo {
         int indice = 0;
         while (cantidadCartasEnMazo < MAX_CARTAS) {
             this.cartasEnMazo.get(indice).setEnMazo(true);
+            this.cartasEnMazo.get(indice).setId(0);
             this.cantidadCartasEnMazo++;
             indice++;
         }

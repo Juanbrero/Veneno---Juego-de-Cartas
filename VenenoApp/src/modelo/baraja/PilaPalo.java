@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class PilaPalo implements Serializable {
 
     private static final int SUMA_MINIMA = 13;
-    private ArrayList<Carta> cartasEnMesa = new ArrayList<>();
+    private ArrayList<ICarta> cartasEnMesa = new ArrayList<>();
     private Palo palo;
     private double sumaValores = 0;
 
@@ -32,11 +32,11 @@ public class PilaPalo implements Serializable {
         return SUMA_MINIMA;
     }
 
-    public ArrayList<Carta> getCartasEnMesa() {
+    public ArrayList<ICarta> getCartasEnMesa() {
         return cartasEnMesa;
     }
 
-    public void agregarCarta(Carta carta) {
+    public void agregarCarta(ICarta carta) {
 
         carta.setEnMesa(true);
         this.setSumaValores(getSumaValores() + carta.getValor());

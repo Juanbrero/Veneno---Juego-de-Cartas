@@ -1,8 +1,9 @@
 package modelo.baraja;
 
-import java.io.Serializable;
 
-public class Carta implements Serializable {
+import java.util.Objects;
+
+public class Carta implements ICarta {
 
     private Palo palo;
     private int nro;
@@ -10,6 +11,7 @@ public class Carta implements Serializable {
     private boolean enMano;
     private boolean enMesa;
     private double valor;
+    private int id;
 
     public Carta(Palo palo, int nro) {
         this.setPalo(palo);
@@ -26,6 +28,17 @@ public class Carta implements Serializable {
     }
 
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
     public Palo getPalo() {
         return palo;
     }
@@ -34,6 +47,7 @@ public class Carta implements Serializable {
         this.palo = palo;
     }
 
+    @Override
     public int getNro() {
         return nro;
     }
@@ -42,6 +56,7 @@ public class Carta implements Serializable {
         this.nro = nro;
     }
 
+    @Override
     public boolean isEnMazo() {
         return enMazo;
     }
@@ -50,6 +65,7 @@ public class Carta implements Serializable {
         this.enMazo = enMazo;
     }
 
+    @Override
     public boolean isEnMano() {
         return enMano;
     }
@@ -58,6 +74,7 @@ public class Carta implements Serializable {
         this.enMano = enMano;
     }
 
+    @Override
     public boolean isEnMesa() {
         return enMesa;
     }
@@ -66,6 +83,7 @@ public class Carta implements Serializable {
         this.enMesa = enMesa;
     }
 
+    @Override
     public double getValor() {
         return valor;
     }
@@ -74,6 +92,7 @@ public class Carta implements Serializable {
         this.valor = valor;
     }
 
+    @Override
     public boolean isCopa() {
 
         boolean esCopa = false;
@@ -88,4 +107,6 @@ public class Carta implements Serializable {
     public String toString() {
         return "[" + nro + " " + palo + "]";
     }
+
+
 }

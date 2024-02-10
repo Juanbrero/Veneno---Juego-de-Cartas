@@ -3,7 +3,8 @@ package controlador;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import eventos.Evento;
-import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
+import modelo.baraja.Palo;
 import modelo.baraja.PilaPalo;
 import modelo.juego.IJuego;
 import modelo.jugador.IJugador;
@@ -62,7 +63,10 @@ public class Controlador implements IControladorRemoto, Serializable {
                     updateTurno();
                     break;
                 case CARTA_JUGADA:
-                    updateCartaJugada(juego.getIndiceCartaJugadaTurnoActual(), juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaActualizada());
+                    updateCartaJugada(juego.getCartaJugadaTurnoActual(), juego.isReiniciarPila(), juego.getPilaActualizada());
+                    break;
+                case VENENO:
+                    updateSeleccionarPila();
                     break;
                 case FIN_JUEGO:
                     updateFinJuego(this.juego.getResultadosFinales());
@@ -115,16 +119,28 @@ public class Controlador implements IControladorRemoto, Serializable {
     /**
      * Recibe la carta a tirar y se la pasa al modelo.
      * @param carta
-     * @param palo
      */
-    public void tirarCarta(int carta, String palo) {
+    public void tirarCarta(ICarta carta) {
         try {
             if (miTurno) {
-                juego.tirarCarta(carta, palo);
+                juego.tirarCarta(carta, carta.getPalo());
             }
             else {
                 vista.mostrarMensaje("Turno del jugador " + juego.obtenerJugadorActual().getNombre() + "!\n");
             }
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void envenenar(Palo pila) {
+        try {
+            if (miTurno) {
+                juego.tirarCarta(juego.getCartaJugadaTurnoActual(), pila);
+            }
+
         }
         catch (RemoteException e) {
             e.printStackTrace();
@@ -194,7 +210,6 @@ public class Controlador implements IControladorRemoto, Serializable {
                 vista.reiniciarMano();
             }
 
-//            this.jugador.recibirCartas(juego.getJugadores().get(this.id).getCartasEnMano());
             this.jugador = juego.getJugadores().get(this.id);
 
             System.out.println("controlador > soy " + jugador.getNombre());
@@ -236,12 +251,11 @@ public class Controlador implements IControladorRemoto, Serializable {
     /**
      * Informa sobre la carta jugada en el turno actual sacandola de la mano.
      * Determina si se debe agregar la carta a la mesa o se debe reiniciar la y sumar puntos.
-     * @param cartaJugada
      * @param carta
      * @param reiniciarPila
      * @param pilaActualizada
      */
-    private void updateCartaJugada(int cartaJugada, Carta carta, boolean reiniciarPila, PilaPalo pilaActualizada) {
+    private void updateCartaJugada(ICarta carta, boolean reiniciarPila, PilaPalo pilaActualizada) {
 
         try {
             System.out.println("controlador > pila a actualizar: " + pilaActualizada.getPalo().toString());
@@ -250,7 +264,7 @@ public class Controlador implements IControladorRemoto, Serializable {
                 /* Actualizo la informacion del jugador luego de jugar el turno. */
                 this.jugador = juego.getJugadores().get(this.id);
 
-                vista.tirarCarta(cartaJugada);
+                vista.tirarCarta(carta);
                 /* Si al tirar la carta me toca levantar la pila de la mesa */
                 if (reiniciarPila) {
                     System.out.println("controlador > updateCartaJugada: " + this.jugador.getPuntosALevantar() + " puntos ");
@@ -268,6 +282,14 @@ public class Controlador implements IControladorRemoto, Serializable {
         }
         catch (RemoteException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void updateSeleccionarPila() {
+
+        if(miTurno) {
+            vista.envenenar();
         }
     }
 

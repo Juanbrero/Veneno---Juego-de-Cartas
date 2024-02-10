@@ -2,6 +2,8 @@ package modelo.juego;
 
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import modelo.baraja.Carta;
+import modelo.baraja.ICarta;
+import modelo.baraja.Palo;
 import modelo.baraja.PilaPalo;
 import modelo.jugador.Jugador;
 
@@ -19,7 +21,7 @@ public interface IJuego extends IObservableRemoto {
 
     int getJugadoresConectados() throws RemoteException;
 
-    Carta getCartaJugadaTurnoActual() throws RemoteException;
+    ICarta getCartaJugadaTurnoActual() throws RemoteException;
 
     int getIndiceCartaJugadaTurnoActual() throws RemoteException;
 
@@ -38,7 +40,7 @@ public interface IJuego extends IObservableRemoto {
 
     void jugarRonda() throws RemoteException;
 
-    void tirarCarta(int carta, String palo) throws RemoteException;
+    void tirarCarta(ICarta carta, Palo pila) throws RemoteException;
 
     boolean verificarSumaPila(PilaPalo pila, int jugadorActual) throws RemoteException;
 

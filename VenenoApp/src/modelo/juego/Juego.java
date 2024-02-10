@@ -2,17 +2,12 @@ package modelo.juego;
 
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 import eventos.Evento;
-import modelo.baraja.Carta;
-import modelo.baraja.Mazo;
-import modelo.baraja.Palo;
-import modelo.baraja.PilaPalo;
+import modelo.baraja.*;
 import modelo.jugador.Jugador;
 import modelo.serializacion.Serializador;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Juego extends ObservableRemoto implements IJuego {
 
@@ -21,6 +16,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private PilaPalo pilaOro;
     private PilaPalo pilaEspada;
     private PilaPalo pilaBasto;
+    private Map<Palo,PilaPalo> pilas = new HashMap<>();
     private Mazo mazo;
     private ArrayList<Jugador> jugadores = new ArrayList<>();
     private int cantidadJugadores;
@@ -29,7 +25,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int cantidadRondas = 2;
     private int rondaActual = 0;
     private int manosJugadas = 0;
-    private Carta cartaJugadaTurnoActual;
+    private ICarta cartaJugadaTurnoActual;
     private int indiceCartaJugadaTurnoActual;
     private PilaPalo pilaActualizada;
     private boolean reiniciarPila;
@@ -41,6 +37,9 @@ public class Juego extends ObservableRemoto implements IJuego {
         this.pilaBasto = new PilaPalo(Palo.BASTO);
         this.pilaOro = new PilaPalo(Palo.ORO);
         this.pilaEspada = new PilaPalo(Palo.ESPADA);
+        this.pilas.put(Palo.BASTO,pilaBasto);
+        this.pilas.put(Palo.ORO,pilaOro);
+        this.pilas.put(Palo.ESPADA,pilaEspada);
         System.out.println("juego > me cree");
     }
 
@@ -75,7 +74,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         this.cantidadRondas = mazo.getCantidadCartasEnMazo() / this.cantidadJugadores;
     }
 
-    public Carta getCartaJugadaTurnoActual() throws RemoteException {
+    public ICarta getCartaJugadaTurnoActual() throws RemoteException {
         return cartaJugadaTurnoActual;
     }
 
@@ -120,10 +119,6 @@ public class Juego extends ObservableRemoto implements IJuego {
 
         notificarObservadores(Evento.JUGADOR_CONECTADO);
 
-//        if(jugadoresConectados == cantidadJugadores) {
-//            System.out.println("juego > jugar primer ronda");
-//            iniciarJuego();
-//        }
     }
 
     /**
@@ -180,54 +175,32 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
-    /**
-     * Maneja la logica de tirar una carta. Verifica si se debe reiniciar la pila de la mesa y pasa el turno.
-     * @param carta
-     * @param palo
-     * @throws RemoteException
-     */
-    public void tirarCarta(int carta, String palo) throws RemoteException {
+    public void tirarCarta(ICarta carta, Palo pila) throws RemoteException {
 
-        cartaJugadaTurnoActual = jugadores.get(jugadorActual).getCartasEnMano().get(carta);
-        indiceCartaJugadaTurnoActual = carta;
-        System.out.println("se tiro la carta " + cartaJugadaTurnoActual.getPalo() + " del indice " + carta);
+        cartaJugadaTurnoActual = carta;
         reiniciarPila = false;
-        if (palo.equals(Palo.BASTO.toString())) {
-            pilaBasto.agregarCarta(cartaJugadaTurnoActual); //agrego primero la carta a la pila de la mesa
-            jugadores.get(jugadorActual).tirarCarta(carta); //tiro la carta de la mano del jugador
-            pilaActualizada = pilaBasto;
 
-            if(verificarSumaPila(pilaBasto,jugadorActual)) {
-                reiniciarPila = true;
-                pilaBasto.reinicarPila();
-            }
+        if (carta.isCopa() && pila.equals(Palo.COPA)) {
+            notificarObservadores(Evento.VENENO);
         }
-        else if (palo.equals(Palo.ORO.toString())) {
-            pilaOro.agregarCarta(cartaJugadaTurnoActual);
+        else {
+            pilas.get(pila).agregarCarta(carta);
             jugadores.get(jugadorActual).tirarCarta(carta);
-            pilaActualizada = pilaOro;
+            pilaActualizada = pilas.get(pila);
 
-            if(verificarSumaPila(pilaOro,jugadorActual)) {
+            if(verificarSumaPila(pilas.get(pila),jugadorActual)) {
                 reiniciarPila = true;
-                pilaOro.reinicarPila();
+                pilas.get(pila).reinicarPila();
             }
-        }
-        else if (palo.equals(Palo.ESPADA.toString())) {
-            pilaEspada.agregarCarta(cartaJugadaTurnoActual);
-            jugadores.get(jugadorActual).tirarCarta(carta);
-            pilaActualizada = pilaEspada;
 
-            if(verificarSumaPila(pilaEspada,jugadorActual)) {
-                reiniciarPila = true;
-                pilaEspada.reinicarPila();
-            }
+            System.out.println("juego > pila actualizada: " + pilaActualizada.getPalo().toString());
+            this.manosJugadas++;
+            notificarObservadores(Evento.CARTA_JUGADA);
+            jugadores.get(jugadorActual).setPuntosALevantar(0); //Reiniciar los puntos a levantar del jugador.
+            pasarTurno();
+
         }
 
-        System.out.println("juego > pila actualizada: " + pilaActualizada.getPalo().toString());
-        this.manosJugadas++;
-        notificarObservadores(Evento.CARTA_JUGADA);
-        jugadores.get(jugadorActual).setPuntosALevantar(0); //Reiniciar los puntos a levantar del jugador.
-        pasarTurno();
     }
 
 
@@ -250,7 +223,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
             int puntos = 0;
             System.out.println("juego > cartas en la pila " + pila.getPalo().toString() + pila.getCartasEnMesa());
-            for (Carta c : pila.getCartasEnMesa()) {
+            for (ICarta c : pila.getCartasEnMesa()) {
                 System.out.println(c.getPalo().toString());
                 if(c.isCopa()) {
                     puntos ++;
