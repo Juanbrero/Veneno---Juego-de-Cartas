@@ -1,6 +1,5 @@
 package modelo.jugador;
 
-import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
 
 import java.util.ArrayList;
@@ -87,18 +86,8 @@ public class Jugador implements IJugador {
 
     public void tirarCarta(ICarta carta) {
 
-//        for (int i = 0; i < cartasEnMano.size(); i++) {
-
-//            if (cartasEnMano.get(i).getNro() == carta.getNro() && cartasEnMano.get(i).getPalo() == carta.getPalo()) {
-//
-//                cartasEnMano.get(i).setEnMano(false);
-//                cartasEnMano.set(i,null);
-//            }
-
-            cartasEnMano.get(carta.getId()).setEnMano(false);
-            cartasEnMano.set(carta.getId(), null);
-
-//        }
+        cartasEnMano.get(carta.getId()).setEnMano(false);
+        cartasEnMano.set(carta.getId(), null);
 
     }
 

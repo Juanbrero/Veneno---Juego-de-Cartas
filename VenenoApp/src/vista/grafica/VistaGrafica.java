@@ -29,9 +29,6 @@ public class VistaGrafica{
     private JPanel mano;
     private JPanel[] cartas = new JPanel[4];
     private JPanel vistaCarta;
-//    private double sumaValorPilaOro = 0;
-//    private double sumaValorPilaBasto = 0;
-//    private double sumaValorPilaEspada = 0;
     private Map<Palo,JLabel> acumulado = new HashMap<>();
     private JLabel sumOro = new JLabel("Acumulado: 0");
     private JLabel sumBasto = new JLabel("Acumulado: 0");
@@ -101,20 +98,6 @@ public class VistaGrafica{
 
         acumulado.get(pila.getPalo()).setText("Acumulado: " + pila.getSumaValores());
 
-//        switch (palo.toString()) {
-//            case "ORO" -> {
-//                sumaValorPilaOro += carta.getValor();
-//                sumOro.setText("Acumulado: " + sumaValorPilaOro);
-//            }
-//            case "BASTO" -> {
-//                sumaValorPilaBasto += carta.getValor();
-//                sumBasto.setText("Acumulado: " + sumaValorPilaBasto);
-//            }
-//            case "ESPADA" -> {
-//                sumaValorPilaEspada += carta.getValor();
-//                sumEspada.setText("Acumulado: " + sumaValorPilaEspada);
-//            }
-//        }
     }
 
 
@@ -127,21 +110,7 @@ public class VistaGrafica{
         System.out.println("vista > pila a reiniciar: " + pilaAReiniciar);
 
         acumulado.get(pilaAReiniciar.getPalo()).setText("Acumulado: 0");
-//        if(pilaAReiniciar.equals("ORO")) {
-//            sumaValorPilaOro = 0;
-//            sumOro.setText("Acumulado: 0");
-//
-//        }
-//        else if (pilaAReiniciar.equals("BASTO")) {
-//            sumaValorPilaBasto = 0;
-//            sumBasto.setText("Acumulado: 0");
-//
-//        }
-//        else {
-//            sumaValorPilaEspada = 0;
-//            sumEspada.setText("Acumulado: 0");
-//
-//        }
+
     }
 
 

@@ -13,6 +13,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class VistaConsola extends JFrame implements IVista {
@@ -28,6 +30,7 @@ public class VistaConsola extends JFrame implements IVista {
     private JTextArea areaTexto;
     private JTextField inputAccion;
     private ArrayList<ICarta> mano = new ArrayList<>();
+    private Map<String,Palo> envenenado = new HashMap<>();
 
 
     public VistaConsola(Controlador controlador) {
@@ -35,6 +38,9 @@ public class VistaConsola extends JFrame implements IVista {
         this.controlador = controlador;
         this.controlador.setVista(this);
         this.inicio = new VistaInicioConsola(this);
+        envenenado.put("B", Palo.BASTO);
+        envenenado.put("O", Palo.ORO);
+        envenenado.put("E", Palo.ESPADA);
 
         setTitle("Veneno - Juego de cartas");
         setSize(500, 400);
@@ -46,12 +52,28 @@ public class VistaConsola extends JFrame implements IVista {
 
         inputAccion = new JTextField();
         JButton enviarButton = new JButton("Enviar");
-//        enviarButton.addActionListener(new ActionListener() {
-//            @Override
-////            public void actionPerformed(ActionEvent e) {
-////                SeleccionarPila();
-////            }
-//        });
+        enviarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String comando = inputAccion.getText();
+                inputAccion.setText("");
+                areaTexto.append(inicio.getNombre() + ": " + comando + "\n");
+
+                if (!comando.isEmpty() && Character.isDigit(comando.charAt(0))) {
+                    op = Integer.parseInt(comando);
+                    if (op > 0 && op < 5 && mano.get(op - 1).isEnMano()) {
+                        controlador.tirarCarta(mano.get(op - 1));
+                    }
+                    else {
+                        areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
+                    }
+                }
+                else if (!comando.isEmpty() && !Character.isDigit(comando.charAt(0))){
+                    controlador.envenenar(envenenado.get(comando.toUpperCase()));
+                }
+            }
+        });
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -140,6 +162,7 @@ public class VistaConsola extends JFrame implements IVista {
     }
 
 
+
 //    private void SeleccionarPila() {
 //        String mensaje = inputAccion.getText();
 //
@@ -193,53 +216,35 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void tirarCarta(ICarta cartaJugada) {
-//        this.mano.get(cartaJugada).setEnMano(false);
+
+        this.mano.get(cartaJugada.getId()).setEnMano(false);
     }
 
     @Override
     public void envenenar() {
 
+        mostrarMensaje("Selecciona la pila a envenenar:\n\t[B]Basto\t[O]Oro\t[E]Espada\n");
     }
 
     @Override
     public void agregarCartaEnMesa(IPilaPalo pila) {
 
+        switch (pila.getPalo()) {
+            case BASTO -> sumaValorPilaBasto = pila.getSumaValores();
+            case ORO -> sumaValorPilaOro = pila.getSumaValores();
+            case ESPADA -> sumaValorPilaEspada = pila.getSumaValores();
+        }
     }
 
     @Override
     public void reiniciarPila(IPilaPalo pilaAReiniciar) {
-
-    }
-
-
-    public void agregarCartaEnMesa(String palo, double valor) {
-
-        switch (palo) {
-            case "ORO" -> {
-                sumaValorPilaOro += valor;
-            }
-            case "BASTO" -> {
-                sumaValorPilaBasto += valor;
-            }
-            case "ESPADA" -> {
-                sumaValorPilaEspada += valor;
-            }
+        switch (pilaAReiniciar.getPalo()) {
+            case BASTO -> sumaValorPilaBasto = 0;
+            case ORO -> sumaValorPilaOro = 0;
+            case ESPADA -> sumaValorPilaEspada = 0;
         }
     }
 
-
-    public void reiniciarPila(String pilaAReiniciar) {
-
-        if(pilaAReiniciar.equals("ORO")) {
-            sumaValorPilaOro = 0;
-        }
-        else if (pilaAReiniciar.equals("BASTO")) {
-            sumaValorPilaBasto = 0;
-        }
-        else {
-            sumaValorPilaEspada = 0;
-        }
-    }
 
     @Override
     public void levantarCartas(int puntos) {

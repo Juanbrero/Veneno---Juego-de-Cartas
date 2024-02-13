@@ -1,7 +1,6 @@
 package vista.grafica;
 
 import controlador.Controlador;
-import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
 import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;

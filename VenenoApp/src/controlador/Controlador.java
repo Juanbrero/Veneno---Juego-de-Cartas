@@ -6,10 +6,8 @@ import eventos.Evento;
 import modelo.baraja.ICarta;
 import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;
-import modelo.baraja.PilaPalo;
 import modelo.juego.IJuego;
 import modelo.jugador.IJugador;
-import modelo.jugador.Jugador;
 import vista.IVista;
 
 import java.io.Serializable;
@@ -152,8 +150,8 @@ public class Controlador implements IControladorRemoto, Serializable {
     public void verEstadisticas() {
 
         try {
-            List<Jugador> temp;
-            temp = juego.recuperarDatos().stream().sorted(Comparator.comparingDouble(Jugador::getRatio)).toList();
+            List<IJugador> temp;
+            temp = juego.recuperarDatos().stream().sorted(Comparator.comparingDouble(IJugador::getRatio)).toList();
             ArrayList<String> resultados = new ArrayList<>();
 
             for (int i = 0; i < temp.size(); i++) {
@@ -294,11 +292,11 @@ public class Controlador implements IControladorRemoto, Serializable {
     }
 
 
-    private void updateFinJuego(List<Jugador> resultadosFinales) {
+    private void updateFinJuego(List<IJugador> resultadosFinales) {
 
         ArrayList<String> resultados = new ArrayList<>();
         int posicion = 1;
-        for (Jugador j : resultadosFinales) {
+        for (IJugador j : resultadosFinales) {
             resultados.add("#" + posicion + " - " + j.getNombre() + " <" + j.getPuntos() + "> pts.");
             posicion++;
         }

@@ -3,6 +3,7 @@ package modelo.juego;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 import eventos.Evento;
 import modelo.baraja.*;
+import modelo.jugador.IJugador;
 import modelo.jugador.Jugador;
 import modelo.serializacion.Serializador;
 
@@ -26,9 +27,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int rondaActual = 0;
     private int manosJugadas = 0;
     private ICarta cartaJugadaTurnoActual;
-    private int indiceCartaJugadaTurnoActual;
     private PilaPalo pilaActualizada;
-    private boolean reiniciarPila;
     private List<Jugador> resultadosFinales = new ArrayList<>();
 
 
@@ -53,8 +52,11 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     /* ----------- Getters & Setters ----------- */
 
-    public ArrayList<Jugador> getJugadores() throws RemoteException {
-        return jugadores;
+    public ArrayList<IJugador> getJugadores() throws RemoteException {
+
+        ArrayList<IJugador> temp = new ArrayList<>();
+        temp.addAll(jugadores);
+        return temp;
     }
 
     public int getCantidadJugadores() throws RemoteException {
@@ -78,20 +80,16 @@ public class Juego extends ObservableRemoto implements IJuego {
         return cartaJugadaTurnoActual;
     }
 
-    public int getIndiceCartaJugadaTurnoActual() throws RemoteException {
-        return indiceCartaJugadaTurnoActual;
-    }
-
-    public boolean isReiniciarPila() throws RemoteException {
-        return reiniciarPila;
-    }
 
     public IPilaPalo getPilaActualizada() throws RemoteException {
         return pilaActualizada;
     }
 
-    public List<Jugador> getResultadosFinales() throws RemoteException {
-        return this.resultadosFinales;
+    public List<IJugador> getResultadosFinales() throws RemoteException {
+
+        List<IJugador> temp = new ArrayList<>();
+        temp.addAll(resultadosFinales);
+        return temp;
     }
 
 
@@ -178,7 +176,6 @@ public class Juego extends ObservableRemoto implements IJuego {
     public void tirarCarta(ICarta carta, Palo pila) throws RemoteException {
 
         cartaJugadaTurnoActual = carta;
-        reiniciarPila = false;
 
         if (carta.isCopa() && pila.equals(Palo.COPA)) {
             notificarObservadores(Evento.VENENO);
@@ -189,7 +186,6 @@ public class Juego extends ObservableRemoto implements IJuego {
             pilaActualizada = pilas.get(pila);
 
             if(verificarSumaPila(pilas.get(pila),jugadorActual)) {
-//                reiniciarPila = true;
                 pilas.get(pila).setReiniciar(true);
                 pilas.get(pila).reinicarPila();
             }
@@ -216,7 +212,7 @@ public class Juego extends ObservableRemoto implements IJuego {
      * @return
      * @throws RemoteException
      */
-    public boolean verificarSumaPila(PilaPalo pila, int jugadorActual) throws RemoteException {
+    private boolean verificarSumaPila(PilaPalo pila, int jugadorActual) throws RemoteException {
 
         boolean levantarCartas = false;
 
@@ -247,7 +243,7 @@ public class Juego extends ObservableRemoto implements IJuego {
      * Asigna el turno actual al siguiente jugador mientras haya turnos por jugar.
      * @throws RemoteException
      */
-    public void pasarTurno() throws RemoteException {
+    private void pasarTurno() throws RemoteException {
 
         /* jugador anterior setea turno en false y pasa al siguiente */
         jugadores.get(jugadorActual).setMiTurno(false);
@@ -278,7 +274,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
-    public void finPartida() throws RemoteException {
+    private void finPartida() throws RemoteException {
 
         //Genero una lista ordenada de los jugadores segun los puntos obtenidos
         resultadosFinales = jugadores.stream().sorted(Comparator.comparingInt(Jugador::getPuntos)).toList();
@@ -362,13 +358,13 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
-    public ArrayList<Jugador> recuperarDatos() throws RemoteException {
+    public ArrayList<IJugador> recuperarDatos() throws RemoteException {
 
         Object[] recuperado = serializador.readObjects();
-        ArrayList<Jugador> datos = new ArrayList<>();
+        ArrayList<IJugador> datos = new ArrayList<>();
 
         for (int i = 0; i < recuperado.length; i++) {
-            datos.add((Jugador)recuperado[i]);
+            datos.add((IJugador)recuperado[i]);
         }
         for (int i = 0; i < recuperado.length; i++) {
             System.out.println(datos.get(i).getNombre() + datos.get(i).getRatio());
@@ -379,8 +375,8 @@ public class Juego extends ObservableRemoto implements IJuego {
 
 
     private void actualizarRegistros(Jugador jugador) throws RemoteException {
-        ArrayList<Jugador> modif = new ArrayList<>();
-        ArrayList<Jugador> og = recuperarDatos();
+        ArrayList<IJugador> modif = new ArrayList<>();
+        ArrayList<IJugador> og = recuperarDatos();
         int indice = 0;
         while (indice < og.size()) {
            if (!og.get(indice).getNombre().equals(jugador.getNombre())) {
@@ -416,9 +412,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         rondaActual = 0;
         manosJugadas = 0;
         cartaJugadaTurnoActual = null;
-        indiceCartaJugadaTurnoActual = 0;
         pilaActualizada = null;
-        reiniciarPila = false;
         jugadores.clear();
         resultadosFinales.clear();
 
@@ -430,7 +424,7 @@ public class Juego extends ObservableRemoto implements IJuego {
      * @return
      * @throws RemoteException
      */
-    public Jugador obtenerJugadorActual() throws RemoteException {
+    public IJugador obtenerJugadorActual() throws RemoteException {
         return jugadores.get(jugadorActual);
     }
 

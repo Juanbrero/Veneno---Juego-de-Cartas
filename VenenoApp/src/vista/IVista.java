@@ -1,10 +1,7 @@
 package vista;
 
-import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
 import modelo.baraja.IPilaPalo;
-import modelo.baraja.Palo;
-import modelo.jugador.IJugador;
 
 import java.util.ArrayList;
 

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 
 public class VistaInicioConsola{
 
@@ -191,6 +192,12 @@ public class VistaInicioConsola{
                 pantallaMenu.setVisible(false);
                 consola.setVisible(true);
                 System.out.println("vista > me conecte");
+
+                try {
+                    consola.getControlador().inicio();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
 
             }
         });

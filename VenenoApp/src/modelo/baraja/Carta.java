@@ -1,8 +1,6 @@
 package modelo.baraja;
 
 
-import java.util.Objects;
-
 public class Carta implements ICarta {
 
     private Palo palo;
