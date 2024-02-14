@@ -33,6 +33,10 @@ public class VistaGrafica{
     private JLabel sumOro = new JLabel("Acumulado: 0");
     private JLabel sumBasto = new JLabel("Acumulado: 0");
     private JLabel sumEspada = new JLabel("Acumulado: 0");
+    private Map<Palo,JLabel> levante = new HashMap<>();
+    private JLabel levanteOro = new JLabel("Puntos a levantar: 0");
+    private JLabel levanteBasto = new JLabel("Puntos a levantar: 0");
+    private JLabel levanteEspada = new JLabel("Puntos a levantar: 0");
     private JPanel nroCartaSup;
     private JPanel paloCarta;
     private JPanel nroCartaInf;
@@ -97,6 +101,7 @@ public class VistaGrafica{
         System.out.println("vista > pila a actualizar: " + pila.getPalo());
 
         acumulado.get(pila.getPalo()).setText("Acumulado: " + pila.getSumaValores());
+        levante.get(pila.getPalo()).setText("Puntos a levantar: " + pila.getLevante());
 
     }
 
@@ -110,6 +115,7 @@ public class VistaGrafica{
         System.out.println("vista > pila a reiniciar: " + pilaAReiniciar);
 
         acumulado.get(pilaAReiniciar.getPalo()).setText("Acumulado: 0");
+        levante.get(pilaAReiniciar.getPalo()).setText("Puntos a levantar: 0");
 
     }
 
@@ -149,24 +155,27 @@ public class VistaGrafica{
 
         pilaBasto = new JPanel(new FlowLayout());
         pilaBasto.setBorder(new LineBorder(Color.DARK_GRAY,5));
-        pilaBasto.setPreferredSize(new Dimension(120,170));
+        pilaBasto.setPreferredSize(new Dimension(130,180));
         JLabel basto = new JLabel("Basto");
         pilaBasto.add(basto);
         pilaBasto.add(sumBasto);
+        pilaBasto.add(levanteBasto);
 
         pilaOro = new JPanel(new FlowLayout());
         pilaOro.setBorder(new LineBorder(Color.DARK_GRAY,5));
-        pilaOro.setPreferredSize(new Dimension(100,150));
-        JLabel oro = new JLabel("Oro");
+        pilaOro.setPreferredSize(new Dimension(130,180));
+        JLabel oro = new JLabel("Oro   ");
         pilaOro.add(oro);
         pilaOro.add(sumOro);
+        pilaOro.add(levanteOro);
 
         pilaEspada = new JPanel(new FlowLayout());
         pilaEspada.setBorder(new LineBorder(Color.DARK_GRAY,5));
-        pilaEspada.setPreferredSize(new Dimension(100,150));
+        pilaEspada.setPreferredSize(new Dimension(130,180));
         JLabel espada = new JLabel("Espada");
         pilaEspada.add(espada);
         pilaEspada.add(sumEspada);
+        pilaEspada.add(levanteEspada);
 
         pilas.add(pilaBasto);
         pilas.add(pilaOro);
@@ -175,6 +184,9 @@ public class VistaGrafica{
         acumulado.put(Palo.BASTO,sumBasto);
         acumulado.put(Palo.ORO,sumOro);
         acumulado.put(Palo.ESPADA,sumEspada);
+        levante.put(Palo.BASTO,levanteBasto);
+        levante.put(Palo.ORO,levanteOro);
+        levante.put(Palo.ESPADA,levanteEspada);
     }
 
 

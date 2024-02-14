@@ -20,7 +20,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private Map<Palo,PilaPalo> pilas = new HashMap<>();
     private Mazo mazo;
     private ArrayList<Jugador> jugadores = new ArrayList<>();
-    private int cantidadJugadores;
+    private int cantidadJugadores = 0;
     private int jugadoresConectados = 0;
     private int jugadorActual = 0;
     private int cantidadRondas = 2;
@@ -64,7 +64,10 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public void setCantidadJugadores(int cantidadJugadores) throws RemoteException {
-        this.cantidadJugadores = cantidadJugadores;
+
+        if (this.cantidadJugadores == 0) {
+            this.cantidadJugadores = cantidadJugadores;
+        }
 //        this.setCantidadRondas();
     }
 
@@ -218,20 +221,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
         if (pila.getSumaValores() >= PilaPalo.getSumaMinima()) {
 
-            /*Si supera el limite de valor acumulado, calculo cuantos puntos se le sumarian al jugador
-            (cada carta de copa que levante se le suma un punto) */
-
-            int puntos = 0;
-            System.out.println("juego > cartas en la pila " + pila.getPalo().toString() + pila.getCartasEnMesa());
-            for (ICarta c : pila.getCartasEnMesa()) {
-                System.out.println(c.getPalo().toString());
-                if(c.isCopa()) {
-                    puntos ++;
-                    System.out.println("juego > carta de copa + 1 punto");
-                }
-            }
-            System.out.println("juego > verificar suma: " + puntos + " puntos");
-            jugadores.get(jugadorActual).sumarPuntos(puntos);
+            jugadores.get(jugadorActual).sumarPuntos(pila.getLevante());
             levantarCartas = true;
         }
 

@@ -9,6 +9,8 @@ public interface IPilaPalo extends Serializable {
 
     double getSumaValores();
 
+    int getLevante();
+
     boolean isReiniciar();
 
     ArrayList<ICarta> getCartasEnMesa();

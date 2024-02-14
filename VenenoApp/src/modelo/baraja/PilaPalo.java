@@ -9,6 +9,7 @@ public class PilaPalo implements IPilaPalo {
     private Palo palo;
     private double sumaValores = 0;
     private boolean reiniciar = false;
+    private int levante = 0;
 
 
     public PilaPalo(Palo palo) {
@@ -34,6 +35,9 @@ public class PilaPalo implements IPilaPalo {
         return SUMA_MINIMA;
     }
 
+    public int getLevante() {
+        return levante;
+    }
 
     public boolean isReiniciar() {
         return reiniciar;
@@ -53,6 +57,9 @@ public class PilaPalo implements IPilaPalo {
         carta.setEnMesa(true);
         this.setSumaValores(getSumaValores() + carta.getValor());
         this.cartasEnMesa.add(carta);
+        if (carta.isCopa()) {
+            this.levante++;
+        }
 
     }
 
@@ -63,6 +70,7 @@ public class PilaPalo implements IPilaPalo {
         }
         this.cartasEnMesa.clear();
         this.setSumaValores(0);
+        this.levante = 0;
 
     }
 

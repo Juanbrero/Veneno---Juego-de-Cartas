@@ -1,11 +1,9 @@
 package vista.consola;
 
 import controlador.Controlador;
-import modelo.baraja.Carta;
 import modelo.baraja.ICarta;
 import modelo.baraja.IPilaPalo;
 import modelo.baraja.Palo;
-import modelo.jugador.IJugador;
 import vista.IVista;
 
 import javax.swing.*;
@@ -21,11 +19,13 @@ public class VistaConsola extends JFrame implements IVista {
 
     private Controlador controlador;
     private VistaInicioConsola inicio;
-    private boolean envenenar = false;
     private int op;
     private double sumaValorPilaOro = 0;
     private double sumaValorPilaBasto = 0;
     private double sumaValorPilaEspada = 0;
+    private int levanteOro = 0;
+    private int levanteBasto = 0;
+    private int levanteEspada = 0;
     private int puntos = 0;
     private JTextArea areaTexto;
     private JTextField inputAccion;
@@ -99,7 +99,6 @@ public class VistaConsola extends JFrame implements IVista {
     }
 
 
-
     @Override
     public void iniciar() {
         setVisible(false);
@@ -116,7 +115,6 @@ public class VistaConsola extends JFrame implements IVista {
 
         areaTexto.append("Inicia la partida!\n");
     }
-
 
     @Override
     public void generarCartas(ArrayList<ICarta> cartas) {
@@ -154,65 +152,13 @@ public class VistaConsola extends JFrame implements IVista {
         areaTexto.append("\n");
 
         mostrarMensaje("\nSuma acumulada en mesa:\n\tBasto [" + sumaValorPilaBasto + "]\tOro [" + sumaValorPilaOro + "]\tEspada [" + sumaValorPilaEspada + "]\n");
+        mostrarMensaje("\nPuntos a levantar:\n\tBasto [" + levanteBasto + "]\tOro [" + levanteOro + "]\tEspada [" + levanteEspada + "]\n");
     }
 
     @Override
     public void mostrarMensaje(String s) {
         areaTexto.append(s);
     }
-
-
-
-//    private void SeleccionarPila() {
-//        String mensaje = inputAccion.getText();
-//
-//        if (!mensaje.isEmpty()) {
-//
-//            areaTexto.append(inicio.getNombre() + ": " + mensaje + "\n");
-//            inputAccion.setText("");
-//            if (!envenenar) {   //Si es false el input corresponde a la seleccion de la carta a tirar
-//
-//                if(Character.isDigit(mensaje.charAt(0))){
-//
-//                    op = Integer.parseInt(mensaje);
-//                }
-//
-//                if (op > 0 && op < 5 && mano.get(op - 1).isEnMano()) { //es una carta valida para jugar
-//                    if (mano.get(op - 1).isCopa()) {
-//                        mostrarMensaje("Selecciona la pila a envenenar:\n\t[B]Basto\t[O]Oro\t[E]Espada\n");
-//                        envenenar = true;
-//
-//                    } else {
-//                        controlador.tirarCarta(op - 1, mano.get(op - 1).getPalo().toString());
-//                        envenenar = false;
-//                    }
-//                }
-//                else {
-//                    areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
-//                }
-//            }
-//            else {  //si es true entonces el input corresponde a la pila a envenenar.
-//
-//                switch (mensaje.toUpperCase()) {
-//                    case "B":
-//                        controlador.tirarCarta(op - 1, "BASTO");
-//                        break;
-//                    case "O":
-//                        controlador.tirarCarta(op - 1, "ORO");
-//                        break;
-//                    case "E":
-//                        controlador.tirarCarta(op - 1, "ESPADA");
-//                        break;
-//                    default:
-//                        areaTexto.append("Sistema: Opcion invalida. Intente otra vez.\n");
-//                        break;
-//                }
-//                envenenar = false;
-//
-//            }
-//        }
-//
-//    }
 
     @Override
     public void tirarCarta(ICarta cartaJugada) {
@@ -230,21 +176,39 @@ public class VistaConsola extends JFrame implements IVista {
     public void agregarCartaEnMesa(IPilaPalo pila) {
 
         switch (pila.getPalo()) {
-            case BASTO -> sumaValorPilaBasto = pila.getSumaValores();
-            case ORO -> sumaValorPilaOro = pila.getSumaValores();
-            case ESPADA -> sumaValorPilaEspada = pila.getSumaValores();
+            case BASTO -> {
+                sumaValorPilaBasto = pila.getSumaValores();
+                levanteBasto = pila.getLevante();
+            }
+            case ORO -> {
+                sumaValorPilaOro = pila.getSumaValores();
+                levanteOro = pila.getLevante();
+            }
+            case ESPADA -> {
+                sumaValorPilaEspada = pila.getSumaValores();
+                levanteEspada = pila.getLevante();
+            }
         }
+
     }
 
     @Override
     public void reiniciarPila(IPilaPalo pilaAReiniciar) {
         switch (pilaAReiniciar.getPalo()) {
-            case BASTO -> sumaValorPilaBasto = 0;
-            case ORO -> sumaValorPilaOro = 0;
-            case ESPADA -> sumaValorPilaEspada = 0;
+            case BASTO -> {
+                sumaValorPilaBasto = 0;
+                levanteBasto = 0;
+            }
+            case ORO -> {
+                sumaValorPilaOro = 0;
+                levanteOro = 0;
+            }
+            case ESPADA -> {
+                sumaValorPilaEspada = 0;
+                levanteEspada = 0;
+            }
         }
     }
-
 
     @Override
     public void levantarCartas(int puntos) {
@@ -304,10 +268,12 @@ public class VistaConsola extends JFrame implements IVista {
 
     public void restablecerSesion() {
 
-        envenenar = false;
         sumaValorPilaOro = 0;
         sumaValorPilaBasto = 0;
         sumaValorPilaEspada = 0;
+        levanteOro = 0;
+        levanteBasto = 0;
+        levanteEspada = 0;
         puntos = 0;
         areaTexto.setText("");
         mano.clear();
