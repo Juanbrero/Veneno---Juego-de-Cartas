@@ -299,9 +299,6 @@ public class VistaGrafica{
 
     public void restablecerSesion() {
 
-//        reiniciarPila("BASTO");
-//        reiniciarPila("ORO");
-//        reiniciarPila("ESPADA");
         puntos = 0;
         panelPuntos.setText("Puntos: " + puntos);
         pantallaJuego.repaint();
